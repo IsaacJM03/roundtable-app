@@ -8,6 +8,7 @@ import type { PrayerRequest } from "@/lib/types";
 import { PrayerStatusBadge } from "@/components/shared/Badge";
 import { TimeAgo } from "@/components/shared/TimeAgo";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
+import { ReactionBar } from "@/components/shared/ReactionBar";
 
 const easeOut = [0.23, 1, 0.32, 1] as const;
 
@@ -33,14 +34,17 @@ function PrayerCard({ prayer, index }: { prayer: PrayerRequest; index: number })
         </h3>
         <p className="text-sm text-white/45 line-clamp-2 leading-relaxed">{prayer.body}</p>
 
-        {updateCount > 0 && (
-          <div className="flex items-center gap-1.5 pt-1">
-            <Heart size={11} className="text-violet-400 fill-violet-400" />
-            <span className="text-xs text-violet-300/70">
-              {updateCount} {updateCount === 1 ? "update" : "updates"} from the prayer team
-            </span>
-          </div>
-        )}
+        <div className="flex items-center justify-between gap-2 pt-1">
+          {updateCount > 0 ? (
+            <div className="flex items-center gap-1.5">
+              <Heart size={11} className="text-violet-400 fill-violet-400" />
+              <span className="text-xs text-violet-300/70">
+                {updateCount} {updateCount === 1 ? "update" : "updates"} from the team
+              </span>
+            </div>
+          ) : <div />}
+          <ReactionBar targetType="prayer" targetId={prayer.id} />
+        </div>
       </Link>
     </motion.div>
   );

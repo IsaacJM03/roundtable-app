@@ -8,6 +8,7 @@ import type { Post } from "@/lib/types";
 import { CategoryBadge } from "@/components/shared/Badge";
 import { TimeAgo } from "@/components/shared/TimeAgo";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
+import { ReactionBar } from "@/components/shared/ReactionBar";
 
 const easeOut = [0.23, 1, 0.32, 1] as const;
 const CATEGORIES = ["all", "general", "faith", "prayer", "life", "bible", "other"] as const;
@@ -36,16 +37,19 @@ function PostCard({ post, index }: { post: Post; index: number }) {
 
         <p className="text-sm text-white/45 line-clamp-2 leading-relaxed">{post.body}</p>
 
-        <div className="flex items-center gap-3 pt-1">
-          <div className="flex items-center gap-1 text-xs text-white/30">
-            <MessageCircle size={12} />
-            <span>{post.reply_count} {post.reply_count === 1 ? "reply" : "replies"}</span>
+        <div className="flex items-center justify-between gap-2 pt-1">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 text-xs text-white/30">
+              <MessageCircle size={12} />
+              <span>{post.reply_count} {post.reply_count === 1 ? "reply" : "replies"}</span>
+            </div>
+            {post.profiles?.display_name ? (
+              <span className="text-xs text-white/30">by {post.profiles.display_name}</span>
+            ) : (
+              <span className="text-xs text-white/20">anonymous</span>
+            )}
           </div>
-          {post.profiles?.display_name ? (
-            <span className="text-xs text-white/30">by {post.profiles.display_name}</span>
-          ) : (
-            <span className="text-xs text-white/20">anonymous</span>
-          )}
+          <ReactionBar targetType="post" targetId={post.id} />
         </div>
       </Link>
     </motion.div>

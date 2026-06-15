@@ -1,4 +1,7 @@
 export type UserRole = "admin" | "prayer_team" | "counselor" | "member";
+export type ReactionType = "praying" | "amen" | "felt_this";
+export type MomentStatus = "active" | "removed";
+export type HonestStatus = "active" | "removed";
 export type PostStatus = "active" | "closed" | "removed";
 export type PostCategory = "general" | "faith" | "prayer" | "life" | "bible" | "other";
 export type PrayerStatus = "active" | "updated" | "answered" | "closed";
@@ -74,6 +77,44 @@ export interface Message {
   session_id: string;
   content: string;
   sender_role: SenderRole;
+  created_at: string;
+}
+
+export interface DailyDrop {
+  id: string;
+  drop_date: string;
+  verse_ref: string;
+  verse_text: string;
+  reflection: string;
+  question: string;
+  author_id: string | null;
+  created_at: string;
+}
+
+export interface ReactionCounts {
+  praying: number;
+  amen: number;
+  felt_this: number;
+}
+
+export interface GodMoment {
+  id: string;
+  body: string;
+  anonymous_token: string | null;
+  status: MomentStatus;
+  created_at: string;
+  reactions?: ReactionCounts;
+}
+
+export interface HonestHour {
+  id: string;
+  body: string;
+  anonymous_token: string;
+  expires_at: string;
+  reaction_count: number;
+  team_note: string | null;
+  team_note_by: string | null;
+  status: HonestStatus;
   created_at: string;
 }
 

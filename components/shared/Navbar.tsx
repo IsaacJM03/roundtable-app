@@ -3,14 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { MessageCircle, Heart, Users, LayoutDashboard, Menu, X } from "lucide-react";
+import { MessageCircle, Heart, Users, LayoutDashboard, Menu, X, BookOpen, Sparkles, Flame } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-const links = [
-  { href: "/discuss", label: "Discuss", icon: MessageCircle },
-  { href: "/pray", label: "Pray", icon: Heart },
+const primaryLinks = [
+  { href: "/daily",   label: "Daily",          icon: BookOpen },
+  { href: "/discuss", label: "Discuss",         icon: MessageCircle },
+  { href: "/pray",    label: "Pray",            icon: Heart },
   { href: "/counsel", label: "Talk to Someone", icon: Users },
+];
+
+const secondaryLinks = [
+  { href: "/moments", label: "Moments", icon: Sparkles },
+  { href: "/honest",  label: "Honest Hours", icon: Flame },
 ];
 
 export function Navbar() {
@@ -44,8 +50,8 @@ export function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden sm:flex items-center gap-1">
-            {links.map(({ href, label, icon: Icon }) => {
+          <div className="hidden sm:flex items-center gap-0.5">
+            {primaryLinks.map(({ href, label, icon: Icon }) => {
               const active = pathname.startsWith(href);
               return (
                 <Link
@@ -64,6 +70,31 @@ export function Navbar() {
                     />
                   )}
                   <Icon size={14} className="relative z-10" />
+                  <span className="relative z-10">{label}</span>
+                </Link>
+              );
+            })}
+            {/* Separator */}
+            <span className="w-px h-4 bg-white/10 mx-1.5" />
+            {secondaryLinks.map(({ href, label, icon: Icon }) => {
+              const active = pathname.startsWith(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={cn(
+                    "relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors duration-150 press-scale",
+                    active ? "text-white" : "text-white/40 hover:text-white/70"
+                  )}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 rounded-lg bg-white/8"
+                      transition={{ type: "spring", duration: 0.4, bounce: 0.15 }}
+                    />
+                  )}
+                  <Icon size={13} className="relative z-10" />
                   <span className="relative z-10">{label}</span>
                 </Link>
               );
@@ -100,7 +131,7 @@ export function Navbar() {
           transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
           className="fixed top-14 inset-x-0 z-40 glass border-b border-white/8 p-4 flex flex-col gap-1 sm:hidden"
         >
-          {links.map(({ href, label, icon: Icon }) => {
+          {[...primaryLinks, ...secondaryLinks].map(({ href, label, icon: Icon }) => {
             const active = pathname.startsWith(href);
             return (
               <Link

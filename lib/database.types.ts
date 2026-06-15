@@ -207,6 +207,150 @@ export interface Database {
         };
         Relationships: [];
       };
+      daily_drops: {
+        Row: {
+          id: string;
+          drop_date: string;
+          verse_ref: string;
+          verse_text: string;
+          reflection: string;
+          question: string;
+          author_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          drop_date: string;
+          verse_ref: string;
+          verse_text: string;
+          reflection: string;
+          question: string;
+          author_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          drop_date?: string;
+          verse_ref?: string;
+          verse_text?: string;
+          reflection?: string;
+          question?: string;
+          author_id?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      god_moments: {
+        Row: {
+          id: string;
+          body: string;
+          anonymous_token: string | null;
+          status: "active" | "removed";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          body: string;
+          anonymous_token?: string | null;
+          status?: "active" | "removed";
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          body?: string;
+          anonymous_token?: string | null;
+          status?: "active" | "removed";
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      moment_reactions: {
+        Row: {
+          id: string;
+          moment_id: string;
+          reaction_type: "praying" | "amen" | "felt_this";
+          anon_token: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          moment_id: string;
+          reaction_type: "praying" | "amen" | "felt_this";
+          anon_token: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          moment_id?: string;
+          reaction_type?: "praying" | "amen" | "felt_this";
+          anon_token?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      reactions: {
+        Row: {
+          id: string;
+          target_type: "post" | "prayer";
+          target_id: string;
+          reaction_type: "praying" | "amen" | "felt_this";
+          anon_token: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          target_type: "post" | "prayer";
+          target_id: string;
+          reaction_type: "praying" | "amen" | "felt_this";
+          anon_token: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          target_type?: "post" | "prayer";
+          target_id?: string;
+          reaction_type?: "praying" | "amen" | "felt_this";
+          anon_token?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      honest_hours: {
+        Row: {
+          id: string;
+          body: string;
+          anonymous_token: string;
+          expires_at: string;
+          reaction_count: number;
+          team_note: string | null;
+          team_note_by: string | null;
+          status: "active" | "removed";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          body: string;
+          anonymous_token: string;
+          expires_at?: string;
+          reaction_count?: number;
+          team_note?: string | null;
+          team_note_by?: string | null;
+          status?: "active" | "removed";
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          body?: string;
+          anonymous_token?: string;
+          expires_at?: string;
+          reaction_count?: number;
+          team_note?: string | null;
+          team_note_by?: string | null;
+          status?: "active" | "removed";
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
