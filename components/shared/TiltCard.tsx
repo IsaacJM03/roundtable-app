@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   motion,
   useMotionValue,
@@ -24,6 +24,10 @@ export function TiltCard({
   spotRadius = 180,
 }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const [isTouch, setIsTouch] = useState(false);
+  useEffect(() => {
+    setIsTouch(window.matchMedia("(hover: none) and (pointer: coarse)").matches);
+  }, []);
   const hoverProgress = useMotionValue(0);
 
   const rawX = useMotionValue(0);
@@ -64,9 +68,9 @@ export function TiltCard({
       ref={ref}
       className={`relative ${className}`}
       style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseMove={isTouch ? undefined : handleMouseMove}
+      onMouseEnter={isTouch ? undefined : handleMouseEnter}
+      onMouseLeave={isTouch ? undefined : handleMouseLeave}
     >
       {/* Spotlight overlay — rides on top of card content */}
       <motion.div

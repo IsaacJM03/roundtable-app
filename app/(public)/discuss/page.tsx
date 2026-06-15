@@ -13,7 +13,17 @@ import { ReactionBar } from "@/components/shared/ReactionBar";
 const easeOut = [0.23, 1, 0.32, 1] as const;
 const CATEGORIES = ["all", "general", "faith", "prayer", "life", "bible", "other"] as const;
 
+const categoryAccent: Record<string, string> = {
+  faith:   "from-amber-400/50",
+  bible:   "from-amber-400/50",
+  prayer:  "from-violet-400/50",
+  life:    "from-rose-400/40",
+  general: "from-white/18",
+  other:   "from-white/18",
+};
+
 function PostCard({ post, index }: { post: Post; index: number }) {
+  const accent = categoryAccent[post.category] ?? "from-white/18";
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -22,31 +32,34 @@ function PostCard({ post, index }: { post: Post; index: number }) {
     >
       <Link
         href={`/discuss/${post.id}`}
-        className="group flex flex-col gap-2 p-4 rounded-2xl glass border border-white/8 hover:border-white/16 hover:shadow-lg hover:shadow-black/20 transition-all duration-200 press-scale"
+        className="group relative flex flex-col gap-2.5 p-4 sm:p-5 rounded-2xl glass border border-white/8 hover:border-white/14 hover:shadow-lg hover:shadow-black/20 transition-all duration-200 press-scale overflow-hidden"
       >
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <CategoryBadge category={post.category} />
-          </div>
-          <TimeAgo date={post.created_at} className="shrink-0 text-xs text-white/30" />
+        {/* Category accent strip */}
+        <span className={`pointer-events-none absolute left-0 top-0 bottom-0 w-[2.5px] rounded-l-2xl bg-gradient-to-b ${accent} to-transparent`} />
+
+        <div className="flex items-center justify-between gap-3">
+          <CategoryBadge category={post.category} />
+          <TimeAgo date={post.created_at} className="shrink-0 text-[11px] text-white/25" />
         </div>
 
-        <h3 className="font-semibold text-white/90 group-hover:text-white transition-colors duration-150 line-clamp-2 leading-snug">
-          {post.title}
-        </h3>
+        <div className="min-w-0">
+          <h3 className="font-semibold text-[15px] text-white/90 group-hover:text-white transition-colors duration-150 line-clamp-2 leading-snug">
+            {post.title}
+          </h3>
+          {post.body && (
+            <p className="text-[13px] text-white/40 line-clamp-2 leading-relaxed mt-1">{post.body}</p>
+          )}
+        </div>
 
-        <p className="text-sm text-white/45 line-clamp-2 leading-relaxed">{post.body}</p>
-
-        <div className="flex items-center justify-between gap-2 pt-1">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 text-xs text-white/30">
-              <MessageCircle size={12} />
-              <span>{post.reply_count} {post.reply_count === 1 ? "reply" : "replies"}</span>
-            </div>
-            {post.profiles?.display_name ? (
-              <span className="text-xs text-white/30">by {post.profiles.display_name}</span>
-            ) : (
-              <span className="text-xs text-white/20">anonymous</span>
+        <div className="flex items-center justify-between gap-2 pt-1 border-t border-white/5">
+          <div className="flex items-center gap-2 text-[11px] text-white/25 min-w-0">
+            <MessageCircle size={11} className="shrink-0" />
+            <span className="shrink-0">{post.reply_count} {post.reply_count === 1 ? "reply" : "replies"}</span>
+            {post.profiles?.display_name && (
+              <>
+                <span className="text-white/12 shrink-0">·</span>
+                <span className="truncate">{post.profiles.display_name}</span>
+              </>
             )}
           </div>
           <ReactionBar targetType="post" targetId={post.id} />
@@ -112,7 +125,7 @@ export default function DiscussPage() {
           </div>
           <Link
             href="/discuss/new"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500/15 border border-amber-500/25 text-amber-300/90 text-sm font-medium hover:bg-amber-500/25 hover:border-amber-500/40 transition-all duration-150 press-scale"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500/15 border border-amber-500/25 text-amber-300/90 text-sm font-medium hover:bg-amber-500/25 hover:border-amber-500/40 transition-all duration-150 press-scale shrink-0"
           >
             <Plus size={14} />
             Ask

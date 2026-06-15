@@ -151,12 +151,12 @@ export default function NewDiscussionPage() {
               </motion.p>
             )}
 
-            <div className="flex items-center justify-between pt-1">
+            <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3 pt-1">
               <p className="text-xs text-white/25">Posted anonymously — no account needed.</p>
               <button
                 type="submit"
                 disabled={loading || title.length < 3 || body.length < 10}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 press-scale glow-amber"
+                className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 press-scale glow-amber"
               >
                 {loading ? (
                   <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />

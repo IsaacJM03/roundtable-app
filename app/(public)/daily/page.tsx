@@ -59,7 +59,7 @@ export default async function DailyPage() {
                 </span>
 
                 {/* Verse text */}
-                <blockquote className="text-xl sm:text-2xl font-medium text-white/90 leading-relaxed">
+                <blockquote className="text-[1.3rem] sm:text-2xl font-semibold text-white/95 leading-[1.45] tracking-[-0.01em]">
                   &ldquo;{drop.verse_text}&rdquo;
                 </blockquote>
 

@@ -53,7 +53,7 @@ export default function HomePage() {
     <div className="relative min-h-[calc(100vh-3.5rem)] flex flex-col">
       <AnimatedBackground />
 
-      <section className="flex-1 flex flex-col items-center justify-center px-4 pt-16 pb-12 text-center">
+      <section className="flex-1 flex flex-col items-center justify-center px-4 pt-10 sm:pt-16 pb-10 sm:pb-12 text-center">
         {/* Eyebrow */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -74,7 +74,7 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.07, ease }}
-          className="max-w-2xl text-5xl sm:text-6xl font-bold tracking-tight leading-[1.1]"
+          className="max-w-2xl text-[2.6rem] sm:text-6xl font-bold tracking-tight leading-[1.1]"
         >
           <span className="gradient-text">Ask anything.</span>
           <br />
@@ -95,7 +95,7 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65, delay: 0.24, ease }}
-          className="mt-12 w-full max-w-4xl grid grid-cols-1 sm:grid-cols-3 gap-4"
+          className="mt-10 sm:mt-12 w-full max-w-4xl grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4"
           style={{ perspective: "1200px" }}
         >
           {entryCards.map((card, i) => (
@@ -109,7 +109,7 @@ export default function HomePage() {
               <TiltCard className="rounded-2xl h-full" spotRadius={200}>
                 <Link
                   href={card.href}
-                  className={`group relative flex flex-col p-6 rounded-2xl glass border border-white/8 ${card.accentBorder} hover:shadow-xl ${card.accentGlow} transition-all duration-300 text-left h-full overflow-hidden`}
+                  className={`group relative flex flex-col p-5 sm:p-6 rounded-2xl glass border border-white/8 ${card.accentBorder} hover:shadow-xl ${card.accentGlow} transition-all duration-300 text-left h-full overflow-hidden`}
                 >
                   {/* Gradient wash on hover */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${card.accentGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-400`} />

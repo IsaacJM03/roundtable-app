@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, Heart, Users, LayoutDashboard, Menu, X, BookOpen, Sparkles, Flame } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -123,41 +123,69 @@ export function Navbar() {
       </nav>
 
       {/* Mobile menu */}
-      {mobileOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-          className="fixed top-14 inset-x-0 z-40 glass border-b border-white/8 p-4 flex flex-col gap-1 sm:hidden"
-        >
-          {[...primaryLinks, ...secondaryLinks].map(({ href, label, icon: Icon }) => {
-            const active = pathname.startsWith(href);
-            return (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setMobileOpen(false)}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150",
-                  active ? "bg-white/10 text-white" : "text-white/60 hover:text-white hover:bg-white/5"
-                )}
-              >
-                <Icon size={16} />
-                {label}
-              </Link>
-            );
-          })}
-          <Link
-            href="/dashboard"
-            onClick={() => setMobileOpen(false)}
-            className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors duration-150"
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
+            className="fixed top-14 inset-x-0 z-40 glass border-b border-white/8 px-3 py-3 flex flex-col gap-0.5 sm:hidden"
           >
-            <LayoutDashboard size={16} />
-            Team Dashboard
-          </Link>
-        </motion.div>
-      )}
+            <p className="px-3 pt-1 pb-2 text-[10px] font-semibold tracking-[0.15em] text-white/25 uppercase">
+              Community
+            </p>
+            {primaryLinks.map(({ href, label, icon: Icon }) => {
+              const active = pathname.startsWith(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150",
+                    active ? "bg-white/10 text-white" : "text-white/55 hover:text-white hover:bg-white/5"
+                  )}
+                >
+                  <Icon size={15} className={active ? "text-amber-300" : ""} />
+                  {label}
+                </Link>
+              );
+            })}
+            <div className="mx-3 my-1 h-px bg-white/6" />
+            <p className="px-3 pt-1 pb-1 text-[10px] font-semibold tracking-[0.15em] text-white/25 uppercase">
+              Explore
+            </p>
+            {secondaryLinks.map(({ href, label, icon: Icon }) => {
+              const active = pathname.startsWith(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150",
+                    active ? "bg-white/10 text-white" : "text-white/45 hover:text-white hover:bg-white/5"
+                  )}
+                >
+                  <Icon size={15} className={active ? "text-amber-300" : ""} />
+                  {label}
+                </Link>
+              );
+            })}
+            <div className="mx-3 my-1 h-px bg-white/6" />
+            <Link
+              href="/dashboard"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors duration-150"
+            >
+              <LayoutDashboard size={15} />
+              Team Dashboard
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Spacer */}
       <div className="h-14" />

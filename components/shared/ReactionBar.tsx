@@ -81,26 +81,28 @@ export function ReactionBar({
   const hasAny = total > 0 || mine.size > 0;
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-0.5">
       {REACTIONS.map(({ type, emoji, label }) => {
         const count = counts[type];
         const active = mine.has(type);
-        if (!hasAny && !active && count === 0) {
-          // Show all buttons when nothing has been reacted to yet
-        }
         return (
           <button
             key={type}
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle(type); }}
             title={label}
-            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs transition-all duration-150 press-scale select-none ${
+            aria-label={`${label}${count > 0 ? ` (${count})` : ""}`}
+            className={`inline-flex items-center gap-1 px-2 py-1 min-h-[28px] rounded-full text-xs transition-all duration-150 press-scale select-none ${
               active
-                ? "bg-white/12 text-white border border-white/20"
-                : "text-white/30 hover:text-white/55 border border-transparent hover:border-white/10"
+                ? "bg-white/10 text-white border border-white/18"
+                : "text-white/28 hover:text-white/55 border border-transparent hover:bg-white/5"
             }`}
           >
-            <span className="text-[13px] leading-none">{emoji}</span>
-            {count > 0 && <span className="font-medium tabular-nums">{count}</span>}
+            <span className="text-[12px] leading-none">{emoji}</span>
+            {count > 0 && (
+              <span className={`text-[11px] font-medium tabular-nums leading-none ${active ? "text-white/80" : "text-white/35"}`}>
+                {count}
+              </span>
+            )}
           </button>
         );
       })}

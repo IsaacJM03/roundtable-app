@@ -241,6 +241,31 @@
   animation: shimmer 1.4s ease infinite;
 }
 
+/* ───── Scrollbar hide ───── */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ───── iOS Safari: prevent input zoom (inputs < 16px trigger zoom) ───── */
+@media (max-width: 767px) {
+  input,
+  textarea,
+  select {
+    font-size: 1rem;
+  }
+}
+
+/* ───── iOS Safari: background-attachment:fixed doesn't work on iOS ───── */
+@media (max-width: 767px) {
+  body {
+    background-attachment: scroll;
+  }
+}
+
 /* ───── Floating orb background ───── */
 @keyframes float-slow {
   0%, 100% { transform: translateY(0) scale(1); }

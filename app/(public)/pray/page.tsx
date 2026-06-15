@@ -12,8 +12,16 @@ import { ReactionBar } from "@/components/shared/ReactionBar";
 
 const easeOut = [0.23, 1, 0.32, 1] as const;
 
+const statusAccent: Record<string, string> = {
+  active:  "from-violet-400/50",
+  updated: "from-amber-400/50",
+  answered:"from-green-400/50",
+  closed:  "from-white/12",
+};
+
 function PrayerCard({ prayer, index }: { prayer: PrayerRequest; index: number }) {
   const updateCount = prayer.prayer_updates?.length ?? 0;
+  const accent = statusAccent[prayer.status] ?? "from-white/12";
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -22,23 +30,30 @@ function PrayerCard({ prayer, index }: { prayer: PrayerRequest; index: number })
     >
       <Link
         href={`/pray/${prayer.id}`}
-        className="group flex flex-col gap-2 p-4 rounded-2xl glass border border-white/8 hover:border-violet-500/20 hover:shadow-lg hover:shadow-violet-500/5 transition-all duration-200 press-scale"
+        className="group relative flex flex-col gap-2.5 p-4 sm:p-5 rounded-2xl glass border border-white/8 hover:border-violet-500/18 hover:shadow-lg hover:shadow-violet-500/5 transition-all duration-200 press-scale overflow-hidden"
       >
+        {/* Status accent strip */}
+        <span className={`pointer-events-none absolute left-0 top-0 bottom-0 w-[2.5px] rounded-l-2xl bg-gradient-to-b ${accent} to-transparent`} />
+
         <div className="flex items-center justify-between gap-2">
           <PrayerStatusBadge status={prayer.status} />
-          <TimeAgo date={prayer.created_at} className="text-xs text-white/30" />
+          <TimeAgo date={prayer.created_at} className="text-[11px] text-white/25" />
         </div>
 
-        <h3 className="font-semibold text-white/90 group-hover:text-white transition-colors duration-150 line-clamp-2">
-          {prayer.title}
-        </h3>
-        <p className="text-sm text-white/45 line-clamp-2 leading-relaxed">{prayer.body}</p>
+        <div className="min-w-0">
+          <h3 className="font-semibold text-[15px] text-white/90 group-hover:text-white transition-colors duration-150 line-clamp-2 leading-snug">
+            {prayer.title}
+          </h3>
+          {prayer.body && (
+            <p className="text-[13px] text-white/40 line-clamp-2 leading-relaxed mt-1">{prayer.body}</p>
+          )}
+        </div>
 
-        <div className="flex items-center justify-between gap-2 pt-1">
+        <div className="flex items-center justify-between gap-2 pt-1 border-t border-white/5">
           {updateCount > 0 ? (
-            <div className="flex items-center gap-1.5">
-              <Heart size={11} className="text-violet-400 fill-violet-400" />
-              <span className="text-xs text-violet-300/70">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <Heart size={11} className="text-violet-400 fill-violet-400 shrink-0" />
+              <span className="text-[11px] text-violet-300/65 truncate">
                 {updateCount} {updateCount === 1 ? "update" : "updates"} from the team
               </span>
             </div>
@@ -92,10 +107,11 @@ export default function PrayPage() {
           </div>
           <Link
             href="/pray/new"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-500/15 border border-violet-500/25 text-violet-300/90 text-sm font-medium hover:bg-violet-500/25 hover:border-violet-500/40 transition-all duration-150 press-scale"
+            className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl bg-violet-500/15 border border-violet-500/25 text-violet-300/90 text-sm font-medium hover:bg-violet-500/25 hover:border-violet-500/40 transition-all duration-150 press-scale shrink-0"
           >
             <Plus size={14} />
-            Request prayer
+            <span className="hidden sm:inline">Request prayer</span>
+            <span className="sm:hidden">Pray</span>
           </Link>
         </motion.div>
 
