@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MessageCircle, Heart, Users, ArrowRight, Sparkles, Shield, Globe } from "lucide-react";
+import { MessageCircle, Heart, Users, ArrowRight } from "lucide-react";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 import { TiltCard } from "@/components/shared/TiltCard";
 import { MagneticButton } from "@/components/shared/MagneticButton";
@@ -13,48 +13,39 @@ const entryCards = [
   {
     href: "/discuss",
     icon: MessageCircle,
-    gradient: "from-amber-500/20 to-orange-500/10",
-    glow: "hover:shadow-amber-500/25",
-    border: "hover:border-amber-500/35",
-    iconBg: "bg-amber-500/20 text-amber-300",
-    iconGlow: "shadow-amber-500/30",
     label: "Discuss",
-    description: "Ask any question about faith, life, Jesus — no account needed. Get real answers from real people.",
-    cta: "Start a discussion",
-    accentColor: "oklch(0.78 0.18 60 / 30%)",
+    num: "01",
+    description:
+      "Ask any question about faith, life, or Jesus — no account needed. Real humans answer.",
+    accentBorder: "hover:border-amber-500/30",
+    accentGlow: "hover:shadow-amber-500/20",
+    accentGradient: "from-amber-500/10 to-transparent",
+    iconColor: "text-amber-400",
   },
   {
     href: "/pray",
     icon: Heart,
-    gradient: "from-violet-500/20 to-purple-500/10",
-    glow: "hover:shadow-violet-500/25",
-    border: "hover:border-violet-500/35",
-    iconBg: "bg-violet-500/20 text-violet-300",
-    iconGlow: "shadow-violet-500/30",
     label: "Pray",
-    description: "Share what's on your heart. Our team prays with you and walks with you through it.",
-    cta: "Share a request",
-    accentColor: "oklch(0.6 0.22 300 / 30%)",
+    num: "02",
+    description:
+      "Share what's heavy on your heart. Our team prays with you and walks with you through it.",
+    accentBorder: "hover:border-violet-500/30",
+    accentGlow: "hover:shadow-violet-500/20",
+    accentGradient: "from-violet-500/10 to-transparent",
+    iconColor: "text-violet-400",
   },
   {
     href: "/counsel",
     icon: Users,
-    gradient: "from-rose-500/20 to-pink-500/10",
-    glow: "hover:shadow-rose-500/25",
-    border: "hover:border-rose-500/35",
-    iconBg: "bg-rose-500/20 text-rose-300",
-    iconGlow: "shadow-rose-500/30",
     label: "Talk to Someone",
-    description: "Struggling with something? Connect with a real peer supporter — anonymously and safely.",
-    cta: "Talk privately",
-    accentColor: "oklch(0.65 0.24 15 / 30%)",
+    num: "03",
+    description:
+      "Struggling? Connect anonymously with a real peer supporter — no account, no judgment.",
+    accentBorder: "hover:border-rose-500/30",
+    accentGlow: "hover:shadow-rose-500/20",
+    accentGradient: "from-rose-500/10 to-transparent",
+    iconColor: "text-rose-400",
   },
-];
-
-const features = [
-  { icon: Sparkles, label: "No AI. Ever.", desc: "Every reply comes from a real human being." },
-  { icon: Shield, label: "Anonymous-first", desc: "No account needed. No tracking. Just community." },
-  { icon: Globe, label: "Open to anyone", desc: "Regardless of where you are in life or faith." },
 ];
 
 export default function HomePage() {
@@ -63,24 +54,24 @@ export default function HomePage() {
       <AnimatedBackground />
 
       <section className="flex-1 flex flex-col items-center justify-center px-4 pt-16 pb-12 text-center">
-        {/* Pill badge */}
+        {/* Eyebrow */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease }}
+          transition={{ duration: 0.5, ease }}
           className="mb-5"
         >
           <MagneticButton>
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-medium cursor-default select-none">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-              Real people. Real conversations.
+            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 text-white/35 text-xs font-medium tracking-wide cursor-default select-none">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400/70 animate-pulse" />
+              No AI. Just people.
             </span>
           </MagneticButton>
         </motion.div>
 
         {/* Headline */}
         <motion.h1
-          initial={{ opacity: 0, y: 22 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.07, ease }}
           className="max-w-2xl text-5xl sm:text-6xl font-bold tracking-tight leading-[1.1]"
@@ -91,53 +82,64 @@ export default function HomePage() {
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15, ease }}
-          className="mt-5 max-w-lg text-base sm:text-lg text-white/50 leading-relaxed"
+          transition={{ duration: 0.6, delay: 0.14, ease }}
+          className="mt-5 max-w-md text-base text-white/40 leading-relaxed"
         >
-          A space where you can be fully honest — about your doubts, your pain, your questions.
-          No judgment. No AI. Just people who care, and a God who already knows.
+          A space to be fully honest — about your doubts, pain, and questions. No judgment. Just people who care.
         </motion.p>
 
         {/* Entry cards */}
         <motion.div
-          initial={{ opacity: 0, y: 28 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, delay: 0.26, ease }}
+          transition={{ duration: 0.65, delay: 0.24, ease }}
           className="mt-12 w-full max-w-4xl grid grid-cols-1 sm:grid-cols-3 gap-4"
           style={{ perspective: "1200px" }}
         >
           {entryCards.map((card, i) => (
             <motion.div
               key={card.href}
-              initial={{ opacity: 0, y: 18 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.32 + i * 0.07, ease }}
+              transition={{ duration: 0.45, delay: 0.3 + i * 0.07, ease }}
               className="h-full"
             >
-              <TiltCard className="rounded-2xl h-full" spotRadius={220}>
+              <TiltCard className="rounded-2xl h-full" spotRadius={200}>
                 <Link
                   href={card.href}
-                  className={`group relative flex flex-col items-start p-5 rounded-2xl glass border border-white/8 ${card.border} hover:shadow-xl ${card.glow} transition-all duration-300 text-left h-full`}
+                  className={`group relative flex flex-col p-6 rounded-2xl glass border border-white/8 ${card.accentBorder} hover:shadow-xl ${card.accentGlow} transition-all duration-300 text-left h-full overflow-hidden`}
                 >
-                  {/* Gradient fill on hover */}
-                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                  {/* Gradient wash on hover */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${card.accentGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-400`} />
 
-                  <div className="relative z-10 w-full flex flex-col h-full">
-                    {/* Icon */}
-                    <div className={`w-10 h-10 rounded-xl ${card.iconBg} flex items-center justify-center mb-4 shadow-lg ${card.iconGlow} transition-shadow duration-300 group-hover:shadow-xl`}>
-                      <card.icon size={20} />
-                    </div>
+                  {/* Watermark icon — no box, just the raw icon huge and ghosted */}
+                  <div className={`pointer-events-none absolute -bottom-3 -right-3 ${card.iconColor} opacity-[0.05] group-hover:opacity-[0.09] transition-opacity duration-300`}>
+                    <card.icon size={130} strokeWidth={1.2} />
+                  </div>
 
-                    <h2 className="text-lg font-bold text-white mb-2">{card.label}</h2>
-                    <p className="text-sm text-white/55 leading-relaxed mb-5 flex-1">{card.description}</p>
+                  <div className="relative z-10 flex flex-col h-full">
+                    {/* Number */}
+                    <span className="text-[10px] font-semibold tracking-[0.2em] text-white/20 uppercase mb-5">
+                      {card.num}
+                    </span>
 
-                    <div className="flex items-center gap-1.5 text-sm font-medium text-white/40 group-hover:text-white/80 transition-colors duration-200">
-                      {card.cta}
+                    {/* Label */}
+                    <h2 className="text-2xl font-bold text-white/95 mb-3 leading-tight">
+                      {card.label}
+                    </h2>
+
+                    {/* Description */}
+                    <p className="text-[13px] text-white/45 leading-relaxed flex-1">
+                      {card.description}
+                    </p>
+
+                    {/* Arrow */}
+                    <div className="mt-6 flex justify-end">
                       <ArrowRight
-                        size={14}
-                        className="group-hover:translate-x-1 transition-transform duration-200"
+                        size={16}
+                        className="text-white/20 group-hover:text-white/50 group-hover:translate-x-1 transition-all duration-200"
                       />
                     </div>
                   </div>
@@ -147,34 +149,28 @@ export default function HomePage() {
           ))}
         </motion.div>
 
-        {/* Feature pills */}
-        <motion.div
+        {/* Feature line — single clean typographic row */}
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.62 }}
-          className="mt-10 flex flex-wrap items-center justify-center gap-3"
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="mt-10 text-[11px] text-white/25 tracking-widest uppercase font-medium"
         >
-          {features.map(({ icon: Icon, label, desc }) => (
-            <MagneticButton key={label} strength={0.2}>
-              <div
-                className="group flex items-center gap-2 px-3 py-2 rounded-full glass border border-white/8 cursor-default hover:border-white/15 transition-colors duration-200"
-                title={desc}
-              >
-                <Icon size={14} className="text-white/40 group-hover:text-white/70 transition-colors duration-150" />
-                <span className="text-xs text-white/50 group-hover:text-white/80 transition-colors duration-150">{label}</span>
-              </div>
-            </MagneticButton>
-          ))}
-        </motion.div>
+          No AI, ever
+          <span className="mx-3 text-white/15">·</span>
+          Anonymous-first
+          <span className="mx-3 text-white/15">·</span>
+          Open to anyone
+        </motion.p>
       </section>
 
       <motion.footer
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.8 }}
+        transition={{ duration: 0.5, delay: 0.75 }}
         className="text-center pb-8 px-4"
       >
-        <p className="text-xs text-white/20">
+        <p className="text-[11px] text-white/15">
           Built to point people to Jesus — one conversation at a time.
         </p>
       </motion.footer>

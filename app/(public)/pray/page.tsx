@@ -81,29 +81,30 @@ export default function PrayPage() {
           className="flex items-center justify-between mb-6"
         >
           <div>
-            <h1 className="text-2xl font-bold text-white">Prayer Wall</h1>
-            <p className="text-sm text-white/40 mt-0.5">Shared needs. Real prayer. Community.</p>
+            <h1 className="text-2xl font-bold text-white tracking-tight">Prayer Wall</h1>
+            <p className="text-xs text-white/30 mt-1 tracking-wide uppercase font-medium">
+              Shared needs · Real prayer · Community
+            </p>
           </div>
           <Link
             href="/pray/new"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-500/20 border border-violet-500/30 text-violet-300 text-sm font-medium hover:bg-violet-500/30 transition-all duration-150 press-scale"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-violet-500/15 border border-violet-500/25 text-violet-300/90 text-sm font-medium hover:bg-violet-500/25 hover:border-violet-500/40 transition-all duration-150 press-scale"
           >
-            <Plus size={15} />
+            <Plus size={14} />
             Request prayer
           </Link>
         </motion.div>
 
-        {/* Info banner */}
+        {/* Pull-quote — not an alert */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.08, ease: easeOut }}
-          className="mb-6 p-4 rounded-2xl bg-violet-500/8 border border-violet-500/15 flex items-start gap-3"
+          className="mb-8 flex items-start gap-4 px-1"
         >
-          <Heart size={16} className="text-violet-400 shrink-0 mt-0.5" />
-          <p className="text-sm text-violet-200/70 leading-relaxed">
-            Our prayer team reads every request and prays for you. You can post anonymously, and we&apos;ll
-            update the thread as God moves. You&apos;re not alone.
+          <div className="mt-1 shrink-0 w-px h-9 rounded-full bg-gradient-to-b from-violet-400/40 to-transparent" />
+          <p className="text-sm text-white/35 leading-relaxed">
+            Our team reads every request and prays for you. Post anonymously — we&apos;ll walk with you as God moves.
           </p>
         </motion.div>
 

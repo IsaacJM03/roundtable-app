@@ -22,11 +22,25 @@ export function Navbar() {
       <nav className="fixed top-0 inset-x-0 z-50 glass border-b border-white/8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0 group">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg group-hover:shadow-amber-500/30 transition-shadow duration-200">
-              <span className="text-sm font-bold text-black">R</span>
-            </div>
-            <span className="font-bold text-sm tracking-tight text-white/90">Roundtable</span>
+          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+            <svg
+              width="26" height="26" viewBox="0 0 28 28" fill="none"
+              className="transition-transform duration-300 group-hover:scale-105"
+              aria-hidden
+            >
+              {/* Center — the table */}
+              <circle cx="14" cy="14" r="3.2" fill="rgb(251 191 36)" opacity="0.95" />
+              {/* Six seats */}
+              <circle cx="14"   cy="3.5"  r="2.1" fill="rgb(251 191 36)" opacity="0.45" />
+              <circle cx="22.6" cy="8.5"  r="2.1" fill="rgb(251 191 36)" opacity="0.45" />
+              <circle cx="22.6" cy="19.5" r="2.1" fill="rgb(251 191 36)" opacity="0.45" />
+              <circle cx="14"   cy="24.5" r="2.1" fill="rgb(251 191 36)" opacity="0.45" />
+              <circle cx="5.4"  cy="19.5" r="2.1" fill="rgb(251 191 36)" opacity="0.45" />
+              <circle cx="5.4"  cy="8.5"  r="2.1" fill="rgb(251 191 36)" opacity="0.45" />
+            </svg>
+            <span className="font-bold text-sm tracking-tight text-white/90 group-hover:text-white transition-colors duration-150">
+              Roundtable
+            </span>
           </Link>
 
           {/* Desktop nav */}

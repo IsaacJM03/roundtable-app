@@ -101,14 +101,16 @@ export default function DiscussPage() {
           className="flex items-center justify-between mb-6"
         >
           <div>
-            <h1 className="text-2xl font-bold text-white">Discussions</h1>
-            <p className="text-sm text-white/40 mt-0.5">Ask anything. Real humans answer.</p>
+            <h1 className="text-2xl font-bold text-white tracking-tight">Discussions</h1>
+            <p className="text-xs text-white/30 mt-1 tracking-wide uppercase font-medium">
+              Ask anything · Real humans answer
+            </p>
           </div>
           <Link
             href="/discuss/new"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-300 text-sm font-medium hover:bg-amber-500/30 transition-all duration-150 press-scale"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500/15 border border-amber-500/25 text-amber-300/90 text-sm font-medium hover:bg-amber-500/25 hover:border-amber-500/40 transition-all duration-150 press-scale"
           >
-            <Plus size={15} />
+            <Plus size={14} />
             Ask
           </Link>
         </motion.div>
