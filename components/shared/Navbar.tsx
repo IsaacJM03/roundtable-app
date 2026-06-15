@@ -25,7 +25,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 inset-x-0 z-50 glass border-b border-white/8">
+      <nav className="fixed top-0 inset-x-0 z-50 bg-[oklch(0.09_0.02_280_/_0.85)] backdrop-blur-xl backdrop-saturate-150 border-b border-white/8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
@@ -125,14 +125,26 @@ export function Navbar() {
       {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
-            key="mobile-menu"
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
-            className="fixed top-14 inset-x-0 z-40 glass border-b border-white/8 px-3 py-3 flex flex-col gap-0.5 sm:hidden"
-          >
+          <>
+            {/* Scrim — dims page + closes on tap */}
+            <motion.button
+              key="mobile-scrim"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close menu"
+              className="fixed inset-0 top-14 z-30 bg-black/60 backdrop-blur-sm sm:hidden"
+            />
+            <motion.div
+              key="mobile-menu"
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
+              className="fixed top-14 inset-x-0 z-40 bg-[oklch(0.11_0.025_280)] border-b border-white/10 shadow-2xl shadow-black/50 px-3 py-3 flex flex-col gap-0.5 sm:hidden"
+            >
             <p className="px-3 pt-1 pb-2 text-[10px] font-semibold tracking-[0.15em] text-white/25 uppercase">
               Community
             </p>
@@ -175,15 +187,16 @@ export function Navbar() {
               );
             })}
             <div className="mx-3 my-1 h-px bg-white/6" />
-            <Link
-              href="/dashboard"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors duration-150"
-            >
-              <LayoutDashboard size={15} />
-              Team Dashboard
-            </Link>
-          </motion.div>
+              <Link
+                href="/dashboard"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors duration-150"
+              >
+                <LayoutDashboard size={15} />
+                Team Dashboard
+              </Link>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
