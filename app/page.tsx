@@ -6,8 +6,11 @@ import { MessageCircle, Heart, Users, ArrowRight } from "lucide-react";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 import { TiltCard } from "@/components/shared/TiltCard";
 import { MagneticButton } from "@/components/shared/MagneticButton";
+import { RotatingText } from "@/components/shared/RotatingText";
 
 const ease = [0.23, 1, 0.32, 1] as const;
+
+const ROTATING_WORDS = ["doubts", "questions", "fears", "faith", "grief"];
 
 const entryCards = [
   {
@@ -64,7 +67,7 @@ export default function HomePage() {
           <MagneticButton>
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 text-white/35 text-xs font-medium tracking-wide cursor-default select-none">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400/70 animate-pulse" />
-              No AI. Just people.
+              Come as you are.
             </span>
           </MagneticButton>
         </motion.div>
@@ -74,11 +77,13 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.07, ease }}
-          className="max-w-2xl text-[2.6rem] sm:text-6xl font-bold tracking-tight leading-[1.1]"
+          className="max-w-2xl text-[2.6rem] sm:text-6xl font-bold tracking-tight leading-[1.08]"
         >
-          <span className="gradient-text">Ask anything.</span>
+          <span className="text-white/90">Bring your</span>
           <br />
-          <span className="text-white/90">Find community.</span>
+          <RotatingText words={ROTATING_WORDS} className="gradient-text gradient-text-animated" />
+          <br />
+          <span className="text-white/90">to the table.</span>
         </motion.h1>
 
         <motion.p
@@ -87,7 +92,7 @@ export default function HomePage() {
           transition={{ duration: 0.6, delay: 0.14, ease }}
           className="mt-5 max-w-md text-base text-white/40 leading-relaxed"
         >
-          A space to be fully honest — about your doubts, pain, and questions. No judgment. Just people who care.
+          Ask the hard questions. Share what hurts. Get real prayer. Anonymous, always — with people who actually care.
         </motion.p>
 
         {/* Entry cards */}
@@ -156,11 +161,11 @@ export default function HomePage() {
           transition={{ duration: 0.5, delay: 0.6 }}
           className="mt-10 text-[11px] text-white/25 tracking-widest uppercase font-medium"
         >
-          No AI, ever
+          Always anonymous
           <span className="mx-3 text-white/15">·</span>
-          Anonymous-first
+          Real people
           <span className="mx-3 text-white/15">·</span>
-          Open to anyone
+          No judgment
         </motion.p>
       </section>
 

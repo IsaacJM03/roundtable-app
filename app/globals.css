@@ -185,6 +185,16 @@
   -webkit-text-fill-color: transparent;
 }
 
+/* Slow panning gradient — constant motion, so linear timing (Emil) */
+.gradient-text-animated {
+  background-size: 220% auto;
+  animation: gradient-pan 7s linear infinite;
+}
+
+@keyframes gradient-pan {
+  to { background-position: 220% center; }
+}
+
 /* ───── Glow effects ───── */
 .glow-amber {
   box-shadow: 0 0 30px -5px oklch(0.78 0.18 60 / 30%);

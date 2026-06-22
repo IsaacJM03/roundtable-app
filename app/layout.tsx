@@ -8,12 +8,12 @@ const geistSans = Geist({ variable: "--font-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Roundtable — Ask anything. Find community.",
+  title: "Roundtable — Bring your doubts to the table.",
   description:
-    "A space to ask any question, seek prayer, find support, and be pointed to Jesus. No AI. Real people. Real conversations.",
+    "Ask the hard questions. Share what hurts. Get real prayer. A safe, anonymous space to be honest about faith, doubt, and life — with people who actually care.",
   openGraph: {
     title: "Roundtable",
-    description: "Ask anything. Find community. Be pointed to Jesus.",
+    description: "Bring your doubts, questions, and fears to the table. Anonymous, always — with people who care.",
     type: "website",
   },
 };
