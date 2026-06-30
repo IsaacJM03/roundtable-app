@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { LayoutDashboard, Heart, Users, MessageCircle, LogOut } from "lucide-react";
+import { LayoutDashboard, Heart, Users, MessageCircle, LogOut, ShieldCheck } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -36,6 +36,16 @@ export default async function DashboardLayout({ children }: { children: React.Re
             {label}
           </Link>
         ))}
+
+        {profile?.role === "admin" && (
+          <Link
+            href="/dashboard/team"
+            className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/6 transition-all duration-150 press-scale"
+          >
+            <ShieldCheck size={15} />
+            Team
+          </Link>
+        )}
 
         <div className="mt-auto">
           <form action="/auth/signout" method="post">

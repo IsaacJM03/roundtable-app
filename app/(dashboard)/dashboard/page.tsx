@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
-import { Heart, Users, MessageCircle, TrendingUp, ArrowRight } from "lucide-react";
+import { Heart, Users, MessageCircle, TrendingUp, ArrowRight, ShieldCheck } from "lucide-react";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -26,6 +26,7 @@ export default async function DashboardPage() {
   const role = profile?.role ?? "member";
   const canCounsel = ["counselor", "admin"].includes(role);
   const canPray = ["prayer_team", "admin"].includes(role);
+  const isAdmin = role === "admin";
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -108,6 +109,21 @@ export default async function DashboardPage() {
           </div>
           <ArrowRight size={16} className="ml-auto text-white/20 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all duration-150" />
         </Link>
+        {isAdmin && (
+          <Link
+            href="/dashboard/team"
+            className="group flex items-center gap-4 p-4 rounded-2xl glass border border-white/8 hover:border-amber-500/25 transition-all duration-200 press-scale"
+          >
+            <div className="w-10 h-10 rounded-xl bg-amber-500/15 flex items-center justify-center shrink-0">
+              <ShieldCheck size={18} className="text-amber-300" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-white">Team members</p>
+              <p className="text-xs text-white/40">Invite people & manage roles</p>
+            </div>
+            <ArrowRight size={16} className="ml-auto text-white/20 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all duration-150" />
+          </Link>
+        )}
       </div>
     </div>
   );
