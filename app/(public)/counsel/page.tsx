@@ -64,7 +64,7 @@ export default function CounselPage() {
             </h1>
             <p className="text-white/50 leading-relaxed mb-8">
               Whatever you&apos;re facing — depression, anxiety, loneliness, grief — a real person is here
-              to listen. No AI. No scripts. Just a human who cares.
+              to listen.
             </p>
 
             {/* Trust signals */}

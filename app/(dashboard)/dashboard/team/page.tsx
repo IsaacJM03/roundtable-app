@@ -52,7 +52,7 @@ async function inviteMember(formData: FormData) {
 
   const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
     data: { display_name: displayName || email.split("@")[0] },
-    redirectTo: `${appUrl}/auth/callback?next=/auth/set-password`,
+    redirectTo: `${appUrl}/auth/accept-invite`,
   });
 
   if (error || !data?.user) {

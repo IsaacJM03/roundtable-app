@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>You're invited to Roundtable</title>
+</head>
+<body style="margin:0;padding:0;background-color:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#0a0a0a;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:480px;background-color:#141414;border:1px solid #2a2a2a;border-radius:16px;overflow:hidden;">
+          <tr>
+            <td style="padding:32px 32px 24px;text-align:center;">
+              <div style="display:inline-block;width:40px;height:40px;background-color:rgba(245,158,11,0.15);border-radius:12px;line-height:40px;font-size:20px;">&#9673;</div>
+              <h1 style="margin:16px 0 8px;font-size:22px;font-weight:700;color:#ffffff;">You're invited to Roundtable</h1>
+              <p style="margin:0;font-size:14px;color:#888888;line-height:1.5;">
+                Someone invited you to join the team dashboard — for prayer team, counselors, and admins.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 32px 32px;text-align:center;">
+              <!--
+                Prefetch-safe: links to our landing page with the verify URL embedded.
+                Gmail scanners load this page but don't consume the token until the user clicks the button.
+              -->
+              <a
+                href="{{ .SiteURL }}/auth/accept-invite?confirmation_url={{ .ConfirmationURL }}"
+                style="display:inline-block;padding:14px 28px;background-color:#f59e0b;color:#000000;font-size:14px;font-weight:600;text-decoration:none;border-radius:12px;"
+              >
+                Accept invitation &amp; set password
+              </a>
+              <p style="margin:24px 0 0;font-size:12px;color:#666666;line-height:1.6;">
+                This link expires in 24 hours. If it doesn't work, ask your admin to send a new invite.
+              </p>
+            </td>
+          </tr>
+        </table>
+        <p style="margin:24px 0 0;font-size:11px;color:#444444;">
+          Roundtable — a faith community platform
+        </p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

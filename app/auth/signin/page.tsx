@@ -1,22 +1,46 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Lock, Mail, ArrowRight, Loader2 } from "lucide-react";
+import { Lock, Mail, ArrowRight, Loader2, AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 
 const easeOut = [0.23, 1, 0.32, 1] as const;
 
+function parseHashError(): string | null {
+  if (typeof window === "undefined") return null;
+  const hash = window.location.hash.slice(1);
+  if (!hash) return null;
+  const params = new URLSearchParams(hash);
+  const code = params.get("error_code");
+  const description = params.get("error_description");
+  if (code === "otp_expired") {
+    return "Your invite link expired or was already used.";
+  }
+  if (description) {
+    return decodeURIComponent(description.replace(/\+/g, " "));
+  }
+  return null;
+}
+
 function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") ?? "/dashboard";
+  const queryError = searchParams.get("error");
+  const [hashError, setHashError] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const inviteFailed = queryError === "auth_failed" || !!hashError;
+
+  useEffect(() => {
+    setHashError(parseHashError());
+  }, []);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -49,6 +73,20 @@ function SignInForm() {
           <p className="text-xs text-white/40">For prayer team, counselors & admins</p>
         </div>
       </div>
+
+      {inviteFailed && (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-start gap-2 text-sm text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 mb-4 leading-relaxed"
+        >
+          <AlertTriangle size={15} className="shrink-0 mt-0.5" />
+          <span>
+            {hashError ??
+              "Your invite link expired or was already used. Ask an admin to send a new invite — you don't have a password yet, so signing in won't work until you accept a fresh invite."}
+          </span>
+        </motion.div>
+      )}
 
       <form onSubmit={submit} className="flex flex-col gap-4">
         <div>
