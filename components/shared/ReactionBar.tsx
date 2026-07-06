@@ -10,7 +10,24 @@ interface ReactionBarProps {
   /** For moments: pass pre-loaded counts from the page to avoid extra fetch */
   initialCounts?: ReactionCounts;
   initialMine?: ReactionType[];
+  /** "dark" (default) = light text for dark surfaces; "light" = dark text for paper/light surfaces */
+  surface?: "dark" | "light";
 }
+
+const SURFACE_CLASSES = {
+  dark: {
+    active: "bg-white/10 text-white border border-white/18",
+    idle: "text-white/28 hover:text-white/55 border border-transparent hover:bg-white/5",
+    countActive: "text-white/80",
+    countIdle: "text-white/35",
+  },
+  light: {
+    active: "bg-black/10 text-black/90 border border-black/15",
+    idle: "text-black/40 hover:text-black/70 border border-transparent hover:bg-black/5",
+    countActive: "text-black/80",
+    countIdle: "text-black/45",
+  },
+} as const;
 
 const REACTIONS: { type: ReactionType; emoji: string; label: string }[] = [
   { type: "praying",   emoji: "🙏", label: "Praying" },
@@ -23,7 +40,9 @@ export function ReactionBar({
   targetId,
   initialCounts,
   initialMine,
+  surface = "dark",
 }: ReactionBarProps) {
+  const tone = SURFACE_CLASSES[surface];
   const [counts, setCounts] = useState<ReactionCounts>(
     initialCounts ?? { praying: 0, amen: 0, felt_this: 0 }
   );
@@ -92,14 +111,12 @@ export function ReactionBar({
             title={label}
             aria-label={`${label}${count > 0 ? ` (${count})` : ""}`}
             className={`inline-flex items-center gap-1 px-2 py-1 min-h-[28px] rounded-full text-xs transition-all duration-150 press-scale select-none ${
-              active
-                ? "bg-white/10 text-white border border-white/18"
-                : "text-white/28 hover:text-white/55 border border-transparent hover:bg-white/5"
+              active ? tone.active : tone.idle
             }`}
           >
             <span className="text-[12px] leading-none">{emoji}</span>
             {count > 0 && (
-              <span className={`text-[11px] font-medium tabular-nums leading-none ${active ? "text-white/80" : "text-white/35"}`}>
+              <span className={`text-[11px] font-medium tabular-nums leading-none ${active ? tone.countActive : tone.countIdle}`}>
                 {count}
               </span>
             )}

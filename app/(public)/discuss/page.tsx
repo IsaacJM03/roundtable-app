@@ -13,18 +13,7 @@ import { ReactionBar } from "@/components/shared/ReactionBar";
 const easeOut = [0.23, 1, 0.32, 1] as const;
 const CATEGORIES = ["all", "general", "faith", "prayer", "life", "bible", "off_topic", "other"] as const;
 
-const categoryAccent: Record<string, string> = {
-  faith:   "from-amber-400/50",
-  bible:   "from-amber-400/50",
-  prayer:  "from-violet-400/50",
-  life:    "from-rose-400/40",
-  general: "from-white/18",
-  off_topic: "from-slate-400/40",
-  other:   "from-white/18",
-};
-
 function PostCard({ post, index }: { post: Post; index: number }) {
-  const accent = categoryAccent[post.category] ?? "from-white/18";
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -35,9 +24,6 @@ function PostCard({ post, index }: { post: Post; index: number }) {
         href={`/discuss/${post.id}`}
         className="group relative flex flex-col gap-2.5 p-4 sm:p-5 rounded-2xl glass border border-white/8 hover:border-white/14 hover:shadow-lg hover:shadow-black/20 transition-all duration-200 press-scale overflow-hidden"
       >
-        {/* Category accent strip */}
-        <span className={`pointer-events-none absolute left-0 top-0 bottom-0 w-[2.5px] rounded-l-2xl bg-gradient-to-b ${accent} to-transparent`} />
-
         <div className="flex items-center justify-between gap-3">
           <CategoryBadge category={post.category} />
           <TimeAgo date={post.created_at} className="shrink-0 text-[11px] text-white/25" />

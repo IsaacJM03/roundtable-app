@@ -3,30 +3,45 @@ import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 
 const PrayerSchema = z.object({
-  title: z.string().min(3).max(150),
-  body: z.string().min(10).max(3000),
+  title: z.string().trim().min(3).max(150),
+  body: z.string().trim().min(10).max(3000).optional(),
   anonymous_token: z.string().uuid().optional(),
-  contact_email: z.string().email().optional().or(z.literal("")),
+  contact_email: z
+    .string()
+    .trim()
+    .optional()
+    .transform((v) => (v === "" ? undefined : v))
+    .pipe(z.string().email().optional()),
   is_private: z.boolean().optional().default(false),
 });
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient();
   const { searchParams } = new URL(req.url);
-  const page = parseInt(searchParams.get("page") ?? "1");
-  const limit = 20;
+  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10) || 1);
+  const limit = Math.min(50, Math.max(1, parseInt(searchParams.get("limit") ?? "24", 10) || 24));
+  const status = searchParams.get("status");
   const offset = (page - 1) * limit;
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("prayer_requests")
     .select("*, prayer_updates(id, note, created_at, profiles(display_name))")
     .eq("is_private", false)
     .neq("status", "closed")
-    .order("created_at", { ascending: false })
-    .range(offset, offset + limit - 1);
+    .order("created_at", { ascending: false });
+
+  if (status === "answered") query = query.eq("status", "answered");
+
+  const { data, error } = await query.range(offset, offset + limit - 1);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ prayers: data ?? [] });
+  const prayers = data ?? [];
+  return NextResponse.json({
+    prayers,
+    page,
+    limit,
+    hasMore: prayers.length === limit,
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -37,10 +52,14 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = await createClient();
+  const bodyText =
+    parsed.data.body && parsed.data.body.length >= 10
+      ? parsed.data.body
+      : "Shared without additional details.";
 
   const { data, error } = await supabase.from("prayer_requests").insert({
     title: parsed.data.title,
-    body: parsed.data.body,
+    body: bodyText,
     anonymous_token: parsed.data.anonymous_token ?? null,
     contact_email: parsed.data.contact_email || null,
     is_private: parsed.data.is_private,

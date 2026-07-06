@@ -9,8 +9,8 @@ const MomentSchema = z.object({
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const page = parseInt(searchParams.get("page") ?? "1");
-  const limit = 20;
+  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10) || 1);
+  const limit = Math.min(50, Math.max(1, parseInt(searchParams.get("limit") ?? "24", 10) || 24));
   const offset = (page - 1) * limit;
 
   const supabase = await createClient();
@@ -22,7 +22,13 @@ export async function GET(req: NextRequest) {
     .range(offset, offset + limit - 1);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ moments: data ?? [] });
+  const moments = data ?? [];
+  return NextResponse.json({
+    moments,
+    page,
+    limit,
+    hasMore: moments.length === limit,
+  });
 }
 
 export async function POST(req: NextRequest) {

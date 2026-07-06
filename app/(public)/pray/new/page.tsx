@@ -23,21 +23,45 @@ export default function NewPrayerPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
+
+    const trimmedTitle = title.trim();
+    const trimmedBody = body.trim();
+    const trimmedEmail = email.trim();
+
+    if (trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setError("Please enter a valid email, or leave it blank.");
+      setLoading(false);
+      return;
+    }
+
+    // DB requires body >= 10 chars; when left blank, use a neutral placeholder.
+    const effectiveBody =
+      trimmedBody.length >= 10
+        ? trimmedBody
+        : "Shared without additional details.";
+
     try {
       const token = getOrCreateAnonToken();
       const res = await fetch("/api/prayers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title,
-          body,
+          title: trimmedTitle,
+          body: effectiveBody,
           anonymous_token: token,
-          contact_email: email || undefined,
+          contact_email: trimmedEmail || undefined,
           is_private: isPrivate,
         }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Something went wrong");
+      if (!res.ok) {
+        const msg = typeof json.error === "string"
+          ? json.error
+          : json.error?.fieldErrors
+            ? Object.values(json.error.fieldErrors).flat().join(" ")
+            : "Something went wrong";
+        throw new Error(msg);
+      }
       router.push(`/pray/${json.prayer.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -94,7 +118,6 @@ export default function NewPrayerPage() {
               </label>
               <textarea
                 id="body"
-                required
                 minLength={10}
                 maxLength={3000}
                 value={body}
@@ -126,11 +149,13 @@ export default function NewPrayerPage() {
             {/* Optional email */}
             <div>
               <label htmlFor="email" className="block text-xs font-medium text-white/50 mb-2 uppercase tracking-wider">
-                Email for updates <span className="normal-case text-white/25 ml-1">(optional)</span>
+                Email for updates <span className="normal-case text-white/25 ml-1"> (optional)</span>
               </label>
               <input
                 id="email"
-                type="email"
+                type="text"
+                inputMode="email"
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com — so we can update you"
@@ -153,7 +178,7 @@ export default function NewPrayerPage() {
               <p className="text-xs text-white/25">Posted anonymously — no account needed.</p>
               <button
                 type="submit"
-                disabled={loading || title.length < 3 || body.length < 10}
+                disabled={loading || title.trim().length < 3}
                 className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-violet-500/80 hover:bg-violet-500 text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 press-scale glow-violet"
               >
                 {loading ? (
