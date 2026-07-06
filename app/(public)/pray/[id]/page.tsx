@@ -8,7 +8,9 @@ import type { PrayerRequest, PrayerUpdate } from "@/lib/types";
 import { PrayerStatusBadge } from "@/components/shared/Badge";
 import { TimeAgo } from "@/components/shared/TimeAgo";
 import { getAnonToken } from "@/lib/anonymous";
+import { prayerBodyForDisplay } from "@/lib/prayer/display";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
+import { ReactionBar } from "@/components/shared/ReactionBar";
 
 const easeOut = [0.23, 1, 0.32, 1] as const;
 
@@ -18,13 +20,13 @@ export default function PrayerDetailPage({ params }: { params: Promise<{ id: str
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/prayers`)
+    fetch(`/api/prayers/${id}`)
       .then((r) => r.json())
       .then((d) => {
-        const found = (d.prayers as PrayerRequest[]).find((p) => p.id === id);
-        setPrayer(found ?? null);
+        setPrayer(d.prayer ?? null);
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, [id]);
 
   const [testimony, setTestimony] = useState("");
@@ -77,6 +79,7 @@ export default function PrayerDetailPage({ params }: { params: Promise<{ id: str
   }
 
   const updates: PrayerUpdate[] = prayer.prayer_updates ?? [];
+  const bodyText = prayerBodyForDisplay(prayer.body);
 
   return (
     <div className="relative min-h-screen">
@@ -96,13 +99,18 @@ export default function PrayerDetailPage({ params }: { params: Promise<{ id: str
               <TimeAgo date={prayer.created_at} className="text-xs text-white/30" />
             </div>
             <h1 className="text-xl font-bold text-white mb-3">{prayer.title}</h1>
-            <p className="text-sm text-white/65 leading-relaxed whitespace-pre-wrap">{prayer.body}</p>
+            {bodyText && (
+              <p className="text-sm text-white/65 leading-relaxed whitespace-pre-wrap">{bodyText}</p>
+            )}
 
-            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/8">
-              <Heart size={13} className="text-violet-400" />
-              <span className="text-xs text-white/40">
-                {updates.length > 0 ? `${updates.length} update${updates.length > 1 ? "s" : ""} from the prayer team` : "Our team is praying for you"}
-              </span>
+            <div className="flex items-center justify-between gap-3 mt-4 pt-4 border-t border-white/8">
+              <div className="flex items-center gap-2 min-w-0">
+                <Heart size={13} className="text-violet-400 shrink-0" />
+                <span className="text-xs text-white/40 truncate">
+                  {updates.length > 0 ? `${updates.length} update${updates.length > 1 ? "s" : ""} from the prayer team` : "Our team is praying for you"}
+                </span>
+              </div>
+              <ReactionBar targetType="prayer" targetId={prayer.id} />
             </div>
           </div>
 

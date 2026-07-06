@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Heart, Send, Lock, Globe } from "lucide-react";
 import Link from "next/link";
 import { getOrCreateAnonToken } from "@/lib/anonymous";
+import { PRAYER_BODY_PLACEHOLDER } from "@/lib/prayer/display";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 
 const easeOut = [0.23, 1, 0.32, 1] as const;
@@ -38,7 +39,7 @@ export default function NewPrayerPage() {
     const effectiveBody =
       trimmedBody.length >= 10
         ? trimmedBody
-        : "Shared without additional details.";
+        : PRAYER_BODY_PLACEHOLDER;
 
     try {
       const token = getOrCreateAnonToken();

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { PRAYER_BODY_PLACEHOLDER } from "@/lib/prayer/display";
 import { z } from "zod";
 
 const PrayerSchema = z.object({
@@ -31,6 +33,7 @@ export async function GET(req: NextRequest) {
     .order("created_at", { ascending: false });
 
   if (status === "answered") query = query.eq("status", "answered");
+  else if (status === "ongoing") query = query.in("status", ["active", "updated"]);
 
   const { data, error } = await query.range(offset, offset + limit - 1);
 
@@ -55,7 +58,7 @@ export async function POST(req: NextRequest) {
   const bodyText =
     parsed.data.body && parsed.data.body.length >= 10
       ? parsed.data.body
-      : "Shared without additional details.";
+      : PRAYER_BODY_PLACEHOLDER;
 
   const { data, error } = await supabase.from("prayer_requests").insert({
     title: parsed.data.title,

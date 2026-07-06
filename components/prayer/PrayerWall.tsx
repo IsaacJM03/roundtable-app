@@ -25,6 +25,8 @@ export interface PrayerNote {
   author?: string | null;
   count?: number;
   href?: string;
+  badge?: string;
+  subtext?: string;
 }
 
 // useLayoutEffect on the server warns; this component only renders client-side
@@ -127,8 +129,10 @@ function NoteInner({
   const label = `${isTestimony ? "Testimony" : "Prayer request"}${note.author ? ` from ${note.author}` : ""}`;
   const body = (
     <>
+      {note.badge && <span className="pw-badge">{note.badge}</span>}
       {isTestimony && <span className="pw-quote" aria-hidden="true">&ldquo;</span>}
       <p className="pw-text">{note.text}</p>
+      {note.subtext && <p className="pw-subtext">&ldquo;{note.subtext}&rdquo;</p>}
       <span className="pw-author">{note.author?.trim() || "Anonymous"}</span>
     </>
   );
@@ -408,6 +412,24 @@ const PW_STYLES = `
   font-size: .95rem;
   line-height: 1.5;
   font-weight: 500;
+  word-break: break-word;
+}
+.pw-badge {
+  align-self: flex-start;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: .2rem .45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pw-ink) 12%, transparent);
+  color: color-mix(in srgb, var(--pw-ink) 75%, transparent);
+}
+.pw-subtext {
+  font-size: .82rem;
+  line-height: 1.45;
+  font-style: italic;
+  opacity: .8;
   word-break: break-word;
 }
 .pw-author { font-size: .72rem; font-weight: 600; opacity: .7; }

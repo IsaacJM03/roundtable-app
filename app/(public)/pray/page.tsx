@@ -11,7 +11,48 @@ import PrayerWall, { type PrayerNote } from "@/components/prayer/PrayerWall";
 import { PAGE_SIZE, usePaginatedFeed } from "@/lib/usePaginatedFeed";
 
 const easeOut = [0.23, 1, 0.32, 1] as const;
-type Filter = "all" | "answered";
+
+type Filter = "all" | "ongoing" | "answered";
+
+const TABS: { id: Filter; label: string; shortLabel: string }[] = [
+  { id: "all", label: "All", shortLabel: "All" },
+  { id: "ongoing", label: "Being prayed for", shortLabel: "Open" },
+  { id: "answered", label: "Answered", shortLabel: "Answered" },
+];
+
+const EMPTY: Record<Filter, string> = {
+  all: "No prayer requests yet.",
+  ongoing: "No open requests right now — check back soon.",
+  answered: "No answered prayers yet.",
+};
+
+const BLURB: Record<Filter, string> = {
+  all: "Our team reads every request and prays for you. Post anonymously — we'll walk with you as God moves.",
+  ongoing: "These requests are still open — our team is actively praying and may share updates along the way.",
+  answered: "Stories of how God moved. Add your own testimony when a request on your heart is answered.",
+};
+
+function prayerToNote(p: PrayerRequest): PrayerNote {
+  const updateCount = p.prayer_updates?.length ?? 0;
+  return {
+    id: p.id,
+    text: p.title,
+    subtext:
+      p.status === "answered" && p.testimony
+        ? p.testimony
+        : updateCount > 0
+          ? `${updateCount} team update${updateCount === 1 ? "" : "s"}`
+          : undefined,
+    badge:
+      p.status === "answered"
+        ? "Answered"
+        : p.status === "updated" || updateCount > 0
+          ? "Being prayed for"
+          : undefined,
+    author: "Anonymous",
+    href: `/pray/${p.id}`,
+  };
+}
 
 export default function PrayPage() {
   const [filter, setFilter] = useState<Filter>("all");
@@ -22,7 +63,7 @@ export default function PrayPage() {
         page: String(page),
         limit: String(PAGE_SIZE),
       });
-      if (filter === "answered") params.set("status", "answered");
+      if (filter !== "all") params.set("status", filter);
       return `/api/prayers?${params}`;
     },
     [filter]
@@ -39,16 +80,7 @@ export default function PrayPage() {
     [filter]
   );
 
-  const notes = useMemo<PrayerNote[]>(
-    () =>
-      prayers.map((p) => ({
-        id: p.id,
-        text: p.status === "answered" && p.testimony ? p.testimony : p.title,
-        author: "Anonymous",
-        href: `/pray/${p.id}`,
-      })),
-    [prayers]
-  );
+  const notes = useMemo(() => prayers.map(prayerToNote), [prayers]);
 
   return (
     <div className="relative min-h-screen">
@@ -77,18 +109,19 @@ export default function PrayPage() {
           </Link>
         </motion.div>
 
-        <div className="flex gap-2 mb-6">
-          {(["all", "answered"] as const).map((f) => (
+        <div className="flex flex-wrap gap-2 mb-6">
+          {TABS.map((tab) => (
             <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize transition-colors press-scale ${
-                filter === f
+              key={tab.id}
+              onClick={() => setFilter(tab.id)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors press-scale ${
+                filter === tab.id
                   ? "bg-violet-500/20 text-violet-200 border border-violet-500/30"
-                  : "text-white/40 hover:text-white/60"
+                  : "text-white/40 hover:text-white/60 border border-transparent"
               }`}
             >
-              {f === "all" ? "All" : "Answered"}
+              <span className="sm:hidden">{tab.shortLabel}</span>
+              <span className="hidden sm:inline">{tab.label}</span>
             </button>
           ))}
         </div>
@@ -100,9 +133,7 @@ export default function PrayPage() {
           className="mb-6 flex items-start gap-4 px-1"
         >
           <div className="mt-1 shrink-0 w-px h-9 rounded-full bg-gradient-to-b from-violet-400/40 to-transparent" />
-          <p className="text-sm text-white/35 leading-relaxed">
-            Our team reads every request and prays for you. Post anonymously — we&apos;ll walk with you as God moves.
-          </p>
+          <p className="text-sm text-white/35 leading-relaxed">{BLURB[filter]}</p>
         </motion.div>
 
         {loading ? (
@@ -114,12 +145,12 @@ export default function PrayPage() {
         ) : notes.length === 0 ? (
           <div className="py-16 text-center">
             <Heart size={32} className="mx-auto mb-3 text-white/20" />
-            <p className="text-white/40 text-sm">
-              {filter === "answered" ? "No answered prayers yet." : "No prayer requests yet."}
-            </p>
-            <Link href="/pray/new" className="mt-3 inline-block text-sm text-violet-300 hover:text-violet-200">
-              Share one →
-            </Link>
+            <p className="text-white/40 text-sm">{EMPTY[filter]}</p>
+            {filter !== "answered" && (
+              <Link href="/pray/new" className="mt-3 inline-block text-sm text-violet-300 hover:text-violet-200">
+                Share one →
+              </Link>
+            )}
           </div>
         ) : (
           <>
