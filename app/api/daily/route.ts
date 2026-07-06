@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { getDropsThroughDate } from "@/lib/daily/ensureDrop";
+import { fetchVerseForDate } from "@/lib/daily/fetchVerse";
+import { DEFAULT_QUESTION, DEFAULT_REFLECTION } from "@/lib/daily/passages";
 import { z } from "zod";
 
 const DropSchema = z.object({
@@ -11,28 +14,44 @@ const DropSchema = z.object({
 });
 
 export async function GET() {
-  const supabase = await createClient();
   const today = new Date().toISOString().split("T")[0];
 
-  // Try today's drop, fall back to most recent past drop
-  const { data: drops } = await supabase
-    .from("daily_drops")
-    .select("*")
-    .lte("drop_date", today)
-    .order("drop_date", { ascending: false })
-    .limit(8);
-
-  if (!drops || drops.length === 0) {
-    return NextResponse.json({ drop: null, recent: [] });
+  try {
+    const drops = await getDropsThroughDate(today);
+    if (drops.length === 0) {
+      return NextResponse.json({ drop: null, recent: [] });
+    }
+    const [drop, ...recent] = drops;
+    return NextResponse.json({ drop, recent });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Failed to load daily drop";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  const [drop, ...recent] = drops;
-  return NextResponse.json({ drop, recent });
 }
 
+/** Preview verse for a date (dashboard "load verse" button) — does not save. */
 export async function POST(req: NextRequest) {
+  const body = await req.json();
+
+  if (body.action === "preview") {
+    const dateStr = body.drop_date ?? new Date().toISOString().split("T")[0];
+    try {
+      const verse = await fetchVerseForDate(dateStr);
+      return NextResponse.json({
+        ...verse,
+        reflection: DEFAULT_REFLECTION,
+        question: DEFAULT_QUESTION,
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Verse fetch failed";
+      return NextResponse.json({ error: message }, { status: 502 });
+    }
+  }
+
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { data: profile } = await supabase
@@ -45,7 +64,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const body = await req.json();
   const parsed = DropSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });

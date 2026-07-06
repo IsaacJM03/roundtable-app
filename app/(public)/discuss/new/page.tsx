@@ -17,6 +17,7 @@ const CATEGORIES: { value: PostCategory; label: string; emoji: string }[] = [
   { value: "prayer", label: "Prayer", emoji: "🙏" },
   { value: "life", label: "Life", emoji: "🌱" },
   { value: "bible", label: "Bible", emoji: "📖" },
+  { value: "off_topic", label: "Off-topic", emoji: "🗣️" },
   { value: "other", label: "Other", emoji: "💭" },
 ];
 
@@ -97,6 +98,11 @@ export default function NewDiscussionPage() {
                   </button>
                 ))}
               </div>
+              {category === "off_topic" && (
+                <p className="text-xs text-white/35 mt-2">
+                  For non-faith chat — keep it respectful. Politics is not allowed.
+                </p>
+              )}
             </div>
 
             {/* Title */}

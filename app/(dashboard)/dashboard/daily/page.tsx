@@ -14,6 +14,7 @@ export default function DashboardDailyPage() {
     question: "",
   });
   const [saving, setSaving] = useState(false);
+  const [loadingVerse, setLoadingVerse] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
@@ -39,6 +40,30 @@ export default function DashboardDailyPage() {
     setSaving(false);
   };
 
+  const loadVerse = async () => {
+    setLoadingVerse(true);
+    setError("");
+    try {
+      const res = await fetch("/api/daily", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "preview", drop_date: form.drop_date }),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error ?? "Failed to load verse");
+      setForm((f) => ({
+        ...f,
+        verse_ref: d.verse_ref,
+        verse_text: d.verse_text,
+        reflection: d.reflection,
+        question: d.question,
+      }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load verse");
+    }
+    setLoadingVerse(false);
+  };
+
   const reflectionLeft = 600 - form.reflection.length;
   const questionLeft = 200 - form.question.length;
 
@@ -50,7 +75,9 @@ export default function DashboardDailyPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-white tracking-tight">Daily Drop</h1>
-          <p className="text-xs text-white/30 mt-1 tracking-wide uppercase font-medium">Write today&apos;s verse + reflection</p>
+          <p className="text-xs text-white/30 mt-1 tracking-wide uppercase font-medium">
+            Verse auto-fills daily · add your reflection
+          </p>
         </div>
       </div>
 
@@ -69,7 +96,17 @@ export default function DashboardDailyPage() {
 
         {/* Verse ref */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs text-white/40 font-medium uppercase tracking-wide">Verse reference</label>
+          <div className="flex items-center justify-between">
+            <label className="text-xs text-white/40 font-medium uppercase tracking-wide">Verse reference</label>
+            <button
+              type="button"
+              onClick={loadVerse}
+              disabled={loadingVerse}
+              className="text-xs text-amber-300/80 hover:text-amber-200 disabled:opacity-40 press-scale"
+            >
+              {loadingVerse ? "Loading…" : "Load verse from API"}
+            </button>
+          </div>
           <input
             type="text"
             placeholder="e.g. Psalm 46:10"

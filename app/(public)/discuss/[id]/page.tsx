@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, MessageCircle, Send, User } from "lucide-react";
+import { ArrowLeft, MessageCircle, Send, User, Flag } from "lucide-react";
 import Link from "next/link";
 import type { Post, Reply } from "@/lib/types";
 import { CategoryBadge } from "@/components/shared/Badge";
@@ -52,6 +52,28 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
   const [replyBody, setReplyBody] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  const [reporting, setReporting] = useState(false);
+  const [reportDone, setReportDone] = useState(false);
+
+  async function reportPost() {
+    const reason = window.prompt("Why are you reporting this post? (required)");
+    if (!reason || reason.trim().length < 3) return;
+    setReporting(true);
+    try {
+      const token = getOrCreateAnonToken();
+      const res = await fetch("/api/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ post_id: id, reporter_token: token, reason: reason.trim() }),
+      });
+      if (!res.ok) throw new Error("Report failed");
+      setReportDone(true);
+    } catch {
+      setError("Could not submit report. Try again.");
+    }
+    setReporting(false);
+  }
 
   useEffect(() => {
     async function load() {
@@ -129,6 +151,15 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
             <div className="flex items-center gap-2 mb-3">
               <CategoryBadge category={post.category} />
               <TimeAgo date={post.created_at} className="text-xs text-white/30 ml-auto" />
+              <button
+                type="button"
+                onClick={reportPost}
+                disabled={reporting || reportDone}
+                className="text-xs text-white/25 hover:text-rose-300 flex items-center gap-1 press-scale disabled:opacity-40"
+              >
+                <Flag size={12} />
+                {reportDone ? "Reported" : "Report"}
+              </button>
             </div>
             <h1 className="text-xl font-bold text-white mb-3">{post.title}</h1>
             <p className="text-sm text-white/65 leading-relaxed whitespace-pre-wrap">{post.body}</p>

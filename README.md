@@ -17,6 +17,7 @@ cp .env.example .env.local
 
 4. In the Supabase dashboard, open **SQL Editor**, create a new query, paste
    the contents of `supabase/migrations/001_initial_schema.sql`, and run it.
+   Then run `002_phase2_features.sql` through `007_session_events.sql` in order.
    This creates the tables, triggers, RLS policies, and Realtime publications.
 5. In **Authentication > URL Configuration**, use:
 

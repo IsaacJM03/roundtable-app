@@ -9,6 +9,7 @@ export interface Database {
           display_name: string;
           role: "admin" | "prayer_team" | "counselor" | "member";
           bio: string | null;
+          available_for_counseling: boolean;
           created_at: string;
         };
         Insert: {
@@ -23,6 +24,7 @@ export interface Database {
           display_name?: string;
           role?: "admin" | "prayer_team" | "counselor" | "member";
           bio?: string | null;
+          available_for_counseling?: boolean;
           created_at?: string;
         };
         Relationships: [];
@@ -43,7 +45,7 @@ export interface Database {
           id?: string;
           title: string;
           body: string;
-          category?: "general" | "faith" | "prayer" | "life" | "bible" | "other";
+          category?: "general" | "faith" | "prayer" | "life" | "bible" | "other" | "off_topic";
           anonymous_token?: string | null;
           author_id?: string | null;
           status?: "active" | "closed" | "removed";
@@ -54,7 +56,7 @@ export interface Database {
           id?: string;
           title?: string;
           body?: string;
-          category?: "general" | "faith" | "prayer" | "life" | "bible" | "other";
+          category?: "general" | "faith" | "prayer" | "life" | "bible" | "other" | "off_topic";
           anonymous_token?: string | null;
           author_id?: string | null;
           status?: "active" | "closed" | "removed";
@@ -100,6 +102,8 @@ export interface Database {
           contact_email: string | null;
           is_private: boolean;
           follow_up_sent_at: string | null;
+          testimony: string | null;
+          testimony_at: string | null;
           created_at: string;
         };
         Insert: {
@@ -122,6 +126,8 @@ export interface Database {
           contact_email?: string | null;
           is_private?: boolean;
           follow_up_sent_at?: string | null;
+          testimony?: string | null;
+          testimony_at?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -160,6 +166,9 @@ export interface Database {
           intake_note: string | null;
           created_at: string;
           closed_at: string | null;
+          accepted_at: string | null;
+          first_response_at: string | null;
+          risk_flag: "none" | "self_harm" | "harm_to_others";
         };
         Insert: {
           id?: string;
@@ -180,6 +189,9 @@ export interface Database {
           intake_note?: string | null;
           created_at?: string;
           closed_at?: string | null;
+          accepted_at?: string | null;
+          first_response_at?: string | null;
+          risk_flag?: "none" | "self_harm" | "harm_to_others";
         };
         Relationships: [];
       };
@@ -188,21 +200,78 @@ export interface Database {
           id: string;
           session_id: string;
           content: string;
-          sender_role: "user" | "counselor";
+          sender_role: "user" | "counselor" | "system";
           created_at: string;
+          audio_url: string | null;
+          audio_duration_seconds: number | null;
         };
         Insert: {
           id?: string;
           session_id: string;
           content: string;
-          sender_role: "user" | "counselor";
+          sender_role: "user" | "counselor" | "system";
           created_at?: string;
+          audio_url?: string | null;
+          audio_duration_seconds?: number | null;
         };
         Update: {
           id?: string;
           session_id?: string;
           content?: string;
-          sender_role?: "user" | "counselor";
+          sender_role?: "user" | "counselor" | "system";
+          created_at?: string;
+          audio_url?: string | null;
+          audio_duration_seconds?: number | null;
+        };
+        Relationships: [];
+      };
+      session_events: {
+        Row: {
+          id: string;
+          session_id: string;
+          actor_id: string | null;
+          action: "accepted" | "message_sent" | "escalated" | "closed";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          session_id: string;
+          actor_id?: string | null;
+          action: "accepted" | "message_sent" | "escalated" | "closed";
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          session_id?: string;
+          actor_id?: string | null;
+          action?: "accepted" | "message_sent" | "escalated" | "closed";
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      post_reports: {
+        Row: {
+          id: string;
+          post_id: string;
+          reporter_token: string;
+          reason: string;
+          status: "pending" | "reviewed" | "actioned";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          post_id: string;
+          reporter_token: string;
+          reason: string;
+          status?: "pending" | "reviewed" | "actioned";
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          post_id?: string;
+          reporter_token?: string;
+          reason?: string;
+          status?: "pending" | "reviewed" | "actioned";
           created_at?: string;
         };
         Relationships: [];

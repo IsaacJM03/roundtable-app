@@ -7,6 +7,7 @@ import Link from "next/link";
 import type { PrayerRequest, PrayerUpdate } from "@/lib/types";
 import { PrayerStatusBadge } from "@/components/shared/Badge";
 import { TimeAgo } from "@/components/shared/TimeAgo";
+import { getAnonToken } from "@/lib/anonymous";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 
 const easeOut = [0.23, 1, 0.32, 1] as const;
@@ -25,6 +26,34 @@ export default function PrayerDetailPage({ params }: { params: Promise<{ id: str
         setLoading(false);
       });
   }, [id]);
+
+  const [testimony, setTestimony] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  const anonToken = getAnonToken();
+  const isOwner = anonToken && prayer?.anonymous_token === anonToken;
+  const canAddTestimony = isOwner && prayer && !prayer.testimony && prayer.status !== "answered";
+
+  async function submitTestimony(e: React.FormEvent) {
+    e.preventDefault();
+    if (!anonToken || !prayer) return;
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      const res = await fetch(`/api/prayers/${prayer.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ anonymous_token: anonToken, testimony }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "Failed");
+      setPrayer(json.prayer);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : "Failed");
+    }
+    setSubmitting(false);
+  }
 
   if (loading) {
     return (
@@ -105,6 +134,41 @@ export default function PrayerDetailPage({ params }: { params: Promise<{ id: str
                 ))}
               </div>
             </div>
+          )}
+
+          {prayer.testimony && (
+            <div className="p-5 rounded-2xl glass border border-green-500/20 mb-6">
+              <h2 className="text-sm font-semibold text-green-300/80 uppercase tracking-wider mb-2">Testimony</h2>
+              <p className="text-sm text-white/70 leading-relaxed italic whitespace-pre-wrap">{prayer.testimony}</p>
+              {prayer.testimony_at && (
+                <TimeAgo date={prayer.testimony_at} className="text-xs text-white/25 mt-2 block" />
+              )}
+            </div>
+          )}
+
+          {canAddTestimony && (
+            <form onSubmit={submitTestimony} className="p-5 rounded-2xl glass border border-green-500/15 mb-6">
+              <h2 className="text-sm font-semibold text-white/70 mb-2">Share how God answered</h2>
+              <p className="text-xs text-white/35 mb-3">Only you can add this — matched by your anonymous session.</p>
+              <textarea
+                required
+                minLength={20}
+                maxLength={2000}
+                value={testimony}
+                onChange={(e) => setTestimony(e.target.value)}
+                rows={4}
+                placeholder="Tell the community how you saw God move…"
+                className="w-full px-4 py-3 rounded-xl glass border border-white/8 bg-transparent text-white text-sm resize-none mb-3"
+              />
+              {submitError && <p className="text-sm text-rose-400 mb-2">{submitError}</p>}
+              <button
+                type="submit"
+                disabled={submitting}
+                className="px-4 py-2 rounded-xl bg-green-500/20 border border-green-500/30 text-green-300 text-sm font-medium disabled:opacity-50 press-scale"
+              >
+                {submitting ? "Saving…" : "Mark as answered"}
+              </button>
+            </form>
           )}
 
           {/* Encouragement */}

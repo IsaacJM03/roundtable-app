@@ -1,9 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import type { DailyDrop } from "@/lib/types";
+import { ensureDropForDate } from "@/lib/daily/ensureDrop";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const revalidate = 86400;
 
@@ -16,12 +17,10 @@ export default async function DailyArchivePage({ params }: { params: Promise<{ d
   const { date } = await params;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) notFound();
 
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("daily_drops")
-    .select("*")
-    .eq("drop_date", date)
-    .single();
+  await ensureDropForDate(date);
+
+  const admin = createAdminClient();
+  const { data } = await admin.from("daily_drops").select("*").eq("drop_date", date).single();
 
   if (!data) notFound();
   const drop = data as DailyDrop;

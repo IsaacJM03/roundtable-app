@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
-import { ArrowLeft, MessageCircle, Trash2 } from "lucide-react";
+import { ArrowLeft, MessageCircle, Trash2, Flag } from "lucide-react";
 import Link from "next/link";
 import type { Post } from "@/lib/types";
 import { CategoryBadge } from "@/components/shared/Badge";
@@ -18,19 +19,38 @@ async function removePost(formData: FormData) {
   revalidatePath("/dashboard/posts");
 }
 
+async function actionReport(formData: FormData) {
+  "use server";
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  if (profile?.role !== "admin") return;
+  const id = formData.get("id") as string;
+  const admin = createAdminClient();
+  await admin.from("post_reports").update({ status: "actioned" }).eq("id", id);
+  revalidatePath("/dashboard/posts");
+}
+
 export default async function PostsDashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/signin");
 
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  const admin = createAdminClient();
 
-  const { data: posts } = await supabase
-    .from("posts")
-    .select("*, profiles(display_name, role)")
-    .eq("status", "active")
-    .order("created_at", { ascending: false })
-    .limit(50);
+  const [{ data: posts }, { data: reports }] = await Promise.all([
+    supabase
+      .from("posts")
+      .select("*, profiles(display_name, role)")
+      .eq("status", "active")
+      .order("created_at", { ascending: false })
+      .limit(50),
+    profile?.role === "admin"
+      ? admin.from("post_reports").select("*, posts(title)").eq("status", "pending").order("created_at", { ascending: false })
+      : Promise.resolve({ data: [] }),
+  ]);
 
   const isAdmin = profile?.role === "admin";
 
@@ -45,6 +65,31 @@ export default async function PostsDashboardPage() {
           <p className="text-sm text-white/40">{posts?.length ?? 0} active posts</p>
         </div>
       </div>
+
+      {isAdmin && reports && reports.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-sm font-semibold text-white/50 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <Flag size={13} />
+            Pending reports ({reports.length})
+          </h2>
+          <div className="flex flex-col gap-2">
+            {reports.map((r: { id: string; reason: string; posts?: { title: string } | null }) => (
+              <div key={r.id} className="p-3 rounded-xl glass border border-amber-500/20 flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm text-white/70">{r.posts?.title ?? "Post"}</p>
+                  <p className="text-xs text-white/40 mt-1">{r.reason}</p>
+                </div>
+                <form action={actionReport}>
+                  <input type="hidden" name="id" value={r.id} />
+                  <button type="submit" className="text-xs text-white/40 hover:text-white press-scale">
+                    Mark reviewed
+                  </button>
+                </form>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col gap-3">
         {!posts || posts.length === 0 ? (

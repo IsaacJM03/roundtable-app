@@ -11,7 +11,7 @@ import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 import { ReactionBar } from "@/components/shared/ReactionBar";
 
 const easeOut = [0.23, 1, 0.32, 1] as const;
-const CATEGORIES = ["all", "general", "faith", "prayer", "life", "bible", "other"] as const;
+const CATEGORIES = ["all", "general", "faith", "prayer", "life", "bible", "off_topic", "other"] as const;
 
 const categoryAccent: Record<string, string> = {
   faith:   "from-amber-400/50",
@@ -19,6 +19,7 @@ const categoryAccent: Record<string, string> = {
   prayer:  "from-violet-400/50",
   life:    "from-rose-400/40",
   general: "from-white/18",
+  off_topic: "from-slate-400/40",
   other:   "from-white/18",
 };
 

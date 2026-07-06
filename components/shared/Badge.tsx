@@ -35,13 +35,15 @@ const categoryColors: Record<string, keyof typeof variants> = {
   life: "rose",
   bible: "teal",
   general: "default",
+  off_topic: "default",
   other: "default",
 };
 
 export function CategoryBadge({ category }: { category: string }) {
+  const label = category === "off_topic" ? "off-topic" : category;
   return (
     <StatusBadge variant={categoryColors[category] ?? "default"}>
-      {category}
+      {label}
     </StatusBadge>
   );
 }

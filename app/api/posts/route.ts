@@ -5,7 +5,7 @@ import { z } from "zod";
 const PostSchema = z.object({
   title: z.string().min(3).max(200),
   body: z.string().min(10).max(5000),
-  category: z.enum(["general", "faith", "prayer", "life", "bible", "other"]),
+  category: z.enum(["general", "faith", "prayer", "life", "bible", "other", "off_topic"]),
   anonymous_token: z.string().uuid().optional(),
 });
 

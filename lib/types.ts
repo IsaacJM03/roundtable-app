@@ -1,18 +1,21 @@
+export type RiskFlag = "none" | "self_harm" | "harm_to_others";
 export type UserRole = "admin" | "prayer_team" | "counselor" | "member";
 export type ReactionType = "praying" | "amen" | "felt_this";
 export type MomentStatus = "active" | "removed";
 export type HonestStatus = "active" | "removed";
 export type PostStatus = "active" | "closed" | "removed";
-export type PostCategory = "general" | "faith" | "prayer" | "life" | "bible" | "other";
+export type PostCategory = "general" | "faith" | "prayer" | "life" | "bible" | "other" | "off_topic";
 export type PrayerStatus = "active" | "updated" | "answered" | "closed";
 export type SessionStatus = "pending" | "active" | "closed";
-export type SenderRole = "user" | "counselor";
+export type SenderRole = "user" | "counselor" | "system";
+export type ReportStatus = "pending" | "reviewed" | "actioned";
 
 export interface Profile {
   id: string;
   display_name: string;
   role: UserRole;
   bio: string | null;
+  available_for_counseling: boolean;
   created_at: string;
 }
 
@@ -27,6 +30,15 @@ export interface Post {
   reply_count: number;
   created_at: string;
   profiles?: Pick<Profile, "display_name" | "role"> | null;
+}
+
+export interface PostReport {
+  id: string;
+  post_id: string;
+  reporter_token: string;
+  reason: string;
+  status: ReportStatus;
+  created_at: string;
 }
 
 export interface Reply {
@@ -48,6 +60,8 @@ export interface PrayerRequest {
   contact_email: string | null;
   is_private: boolean;
   follow_up_sent_at: string | null;
+  testimony: string | null;
+  testimony_at: string | null;
   created_at: string;
   prayer_updates?: PrayerUpdate[];
 }
@@ -70,6 +84,9 @@ export interface CounselingSession {
   intake_note: string | null;
   created_at: string;
   closed_at: string | null;
+  accepted_at: string | null;
+  first_response_at: string | null;
+  risk_flag: RiskFlag;
 }
 
 export interface Message {
@@ -77,6 +94,16 @@ export interface Message {
   session_id: string;
   content: string;
   sender_role: SenderRole;
+  created_at: string;
+  audio_url: string | null;
+  audio_duration_seconds: number | null;
+}
+
+export interface SessionEvent {
+  id: string;
+  session_id: string;
+  actor_id: string | null;
+  action: "accepted" | "message_sent" | "escalated" | "closed";
   created_at: string;
 }
 
@@ -125,10 +152,12 @@ export type Database = {
       profiles: { Row: Profile; Insert: Partial<Profile>; Update: Partial<Profile> };
       posts: { Row: Post; Insert: Omit<Post, "id" | "created_at" | "reply_count">; Update: Partial<Post> };
       replies: { Row: Reply; Insert: Omit<Reply, "id" | "created_at">; Update: Partial<Reply> };
-      prayer_requests: { Row: PrayerRequest; Insert: Omit<PrayerRequest, "id" | "created_at" | "follow_up_sent_at">; Update: Partial<PrayerRequest> };
+      prayer_requests: { Row: PrayerRequest; Insert: Omit<PrayerRequest, "id" | "created_at" | "follow_up_sent_at" | "testimony" | "testimony_at">; Update: Partial<PrayerRequest> };
       prayer_updates: { Row: PrayerUpdate; Insert: Omit<PrayerUpdate, "id" | "created_at">; Update: Partial<PrayerUpdate> };
-      counseling_sessions: { Row: CounselingSession; Insert: Omit<CounselingSession, "id" | "created_at" | "closed_at">; Update: Partial<CounselingSession> };
-      messages: { Row: Message; Insert: Omit<Message, "id" | "created_at">; Update: Partial<Message> };
+      counseling_sessions: { Row: CounselingSession; Insert: Omit<CounselingSession, "id" | "created_at" | "closed_at" | "accepted_at" | "first_response_at" | "risk_flag">; Update: Partial<CounselingSession> };
+      messages: { Row: Message; Insert: Omit<Message, "id" | "created_at" | "audio_url" | "audio_duration_seconds">; Update: Partial<Message> };
+      post_reports: { Row: PostReport; Insert: Omit<PostReport, "id" | "created_at" | "status">; Update: Partial<PostReport> };
+      session_events: { Row: SessionEvent; Insert: Omit<SessionEvent, "id" | "created_at">; Update: Partial<SessionEvent> };
     };
   };
 };

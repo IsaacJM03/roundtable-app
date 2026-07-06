@@ -1,24 +1,58 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft, Users, Clock, CheckCircle } from "lucide-react";
+import { ArrowLeft, Users, Clock, CheckCircle, AlertTriangle, Radio } from "lucide-react";
 import type { CounselingSession } from "@/lib/types";
 import { TimeAgo } from "@/components/shared/TimeAgo";
 
 const easeOut = [0.23, 1, 0.32, 1] as const;
 
+function waitLabel(session: CounselingSession): string | null {
+  if (session.first_response_at) {
+    const ms =
+      new Date(session.first_response_at).getTime() - new Date(session.created_at).getTime();
+    const min = Math.round(ms / 60000);
+    return `First response: ${min}m`;
+  }
+  if (session.accepted_at) {
+    return "Accepted, awaiting first message";
+  }
+  return null;
+}
+
 export default function CounselingDashboardPage() {
   const [sessions, setSessions] = useState<CounselingSession[]>([]);
+  const [available, setAvailable] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const load = useCallback(() => {
     fetch("/api/counsel")
       .then((r) => r.json())
-      .then((d) => { setSessions(d.sessions ?? []); setLoading(false); })
+      .then((d) => {
+        setSessions(d.sessions ?? []);
+        setAvailable(d.available_for_counseling ?? false);
+        setLoading(false);
+      })
       .catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    load();
+    const interval = setInterval(load, 20000);
+    return () => clearInterval(interval);
+  }, [load]);
+
+  async function toggleAvailability() {
+    const next = !available;
+    const res = await fetch("/api/counsel", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ available_for_counseling: next }),
+    });
+    if (res.ok) setAvailable(next);
+  }
 
   async function accept(roomId: string) {
     await fetch(`/api/counsel/${roomId}`, {
@@ -27,7 +61,7 @@ export default function CounselingDashboardPage() {
       body: JSON.stringify({ action: "accept" }),
     });
     window.open(`/counsel/${roomId}?team=1`, "_blank");
-    setSessions((prev) => prev.map((s) => s.room_id === roomId ? { ...s, status: "active" } : s));
+    load();
   }
 
   const pending = sessions.filter((s) => s.status === "pending");
@@ -35,14 +69,27 @@ export default function CounselingDashboardPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="flex items-center gap-3 mb-6">
-        <Link href="/dashboard" className="text-white/40 hover:text-white/70 transition-colors duration-150 press-scale">
-          <ArrowLeft size={18} />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold text-white">Counseling Queue</h1>
-          <p className="text-sm text-white/40">{pending.length} waiting · {active.length} active</p>
+      <div className="flex items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-3">
+          <Link href="/dashboard" className="text-white/40 hover:text-white/70 transition-colors duration-150 press-scale">
+            <ArrowLeft size={18} />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-white">Counseling Queue</h1>
+            <p className="text-sm text-white/40">{pending.length} waiting · {active.length} active</p>
+          </div>
         </div>
+        <button
+          onClick={toggleAvailability}
+          className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium border transition-all press-scale ${
+            available
+              ? "bg-green-500/15 border-green-500/30 text-green-300"
+              : "glass border-white/12 text-white/40"
+          }`}
+        >
+          <Radio size={14} className={available ? "animate-pulse" : ""} />
+          {available ? "Available for chats" : "Not available"}
+        </button>
       </div>
 
       {loading ? (
@@ -71,16 +118,27 @@ export default function CounselingDashboardPage() {
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.35, delay: i * 0.05, ease: easeOut }}
-                    className="p-4 rounded-2xl glass border border-rose-500/15 flex items-center gap-4"
+                    className={`p-4 rounded-2xl glass border flex items-center gap-4 ${
+                      session.risk_flag !== "none"
+                        ? "border-amber-500/40 bg-amber-500/5"
+                        : "border-rose-500/15"
+                    }`}
                   >
                     <div className="w-10 h-10 rounded-xl bg-rose-500/15 flex items-center justify-center shrink-0">
-                      <Users size={18} className="text-rose-300" />
+                      {session.risk_flag !== "none" ? (
+                        <AlertTriangle size={18} className="text-amber-300" />
+                      ) : (
+                        <Users size={18} className="text-rose-300" />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-white/80 line-clamp-1">
                         {session.intake_note ?? "No intake note provided"}
                       </p>
                       <TimeAgo date={session.created_at} className="text-xs text-white/30 mt-0.5" />
+                      {session.risk_flag !== "none" && (
+                        <span className="text-[10px] uppercase text-amber-300/80">Priority — {session.risk_flag.replace("_", " ")}</span>
+                      )}
                     </div>
                     <button
                       onClick={() => accept(session.room_id)}
@@ -118,6 +176,9 @@ export default function CounselingDashboardPage() {
                         {session.intake_note ?? "Active session"}
                       </p>
                       <TimeAgo date={session.created_at} className="text-xs text-white/30 mt-0.5" />
+                      {waitLabel(session) && (
+                        <p className="text-[10px] text-white/35 mt-0.5">{waitLabel(session)}</p>
+                      )}
                     </div>
                     <a
                       href={`/counsel/${session.room_id}?team=1`}
@@ -134,6 +195,12 @@ export default function CounselingDashboardPage() {
           )}
         </>
       )}
+
+      <p className="text-xs text-white/20 mt-8 text-center">
+        <Link href="/dashboard/counseling/audit" className="hover:text-white/40 underline">
+          View session audit log
+        </Link>
+      </p>
     </div>
   );
 }

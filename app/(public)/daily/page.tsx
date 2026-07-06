@@ -1,9 +1,8 @@
-import { createClient } from "@/lib/supabase/server";
-import { notFound } from "next/navigation";
 import Link from "next/link";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 import { ArrowRight, BookOpen } from "lucide-react";
 import type { DailyDrop } from "@/lib/types";
+import { getDropsThroughDate } from "@/lib/daily/ensureDrop";
 
 export const revalidate = 3600;
 
@@ -13,18 +12,11 @@ function formatDate(dateStr: string) {
 }
 
 async function getToday(): Promise<{ drop: DailyDrop | null; recent: DailyDrop[] }> {
-  const supabase = await createClient();
   const today = new Date().toISOString().split("T")[0];
-  const { data } = await supabase
-    .from("daily_drops")
-    .select("*")
-    .lte("drop_date", today)
-    .order("drop_date", { ascending: false })
-    .limit(8);
-
-  if (!data || data.length === 0) return { drop: null, recent: [] };
+  const data = await getDropsThroughDate(today);
+  if (data.length === 0) return { drop: null, recent: [] };
   const [drop, ...recent] = data;
-  return { drop: drop as DailyDrop, recent: recent as DailyDrop[] };
+  return { drop, recent };
 }
 
 export default async function DailyPage() {

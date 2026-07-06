@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, Plus } from "lucide-react";
+import { Heart, Plus, Sparkles } from "lucide-react";
 import type { PrayerRequest } from "@/lib/types";
 import { PrayerStatusBadge } from "@/components/shared/Badge";
 import { TimeAgo } from "@/components/shared/TimeAgo";
@@ -11,6 +11,7 @@ import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 import { ReactionBar } from "@/components/shared/ReactionBar";
 
 const easeOut = [0.23, 1, 0.32, 1] as const;
+type Filter = "all" | "answered";
 
 const statusAccent: Record<string, string> = {
   active:  "from-violet-400/50",
@@ -32,8 +33,14 @@ function PrayerCard({ prayer, index }: { prayer: PrayerRequest; index: number })
         href={`/pray/${prayer.id}`}
         className="group relative flex flex-col gap-2.5 p-4 sm:p-5 rounded-2xl glass border border-white/8 hover:border-violet-500/18 hover:shadow-lg hover:shadow-violet-500/5 transition-all duration-200 press-scale overflow-hidden"
       >
-        {/* Status accent strip */}
         <span className={`pointer-events-none absolute left-0 top-0 bottom-0 w-[2.5px] rounded-l-2xl bg-gradient-to-b ${accent} to-transparent`} />
+
+        {prayer.status === "answered" && (
+          <span className="absolute top-3 right-3 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-green-500/15 text-green-300 border border-green-500/25 flex items-center gap-1">
+            <Sparkles size={10} />
+            Answered
+          </span>
+        )}
 
         <div className="flex items-center justify-between gap-2">
           <PrayerStatusBadge status={prayer.status} />
@@ -44,9 +51,13 @@ function PrayerCard({ prayer, index }: { prayer: PrayerRequest; index: number })
           <h3 className="font-semibold text-[15px] text-white/90 group-hover:text-white transition-colors duration-150 line-clamp-2 leading-snug">
             {prayer.title}
           </h3>
-          {prayer.body && (
+          {prayer.testimony ? (
+            <p className="text-[13px] text-green-300/70 line-clamp-2 leading-relaxed mt-1 italic">
+              &ldquo;{prayer.testimony}&rdquo;
+            </p>
+          ) : prayer.body ? (
             <p className="text-[13px] text-white/40 line-clamp-2 leading-relaxed mt-1">{prayer.body}</p>
-          )}
+          ) : null}
         </div>
 
         <div className="flex items-center justify-between gap-2 pt-1 border-t border-white/5">
@@ -81,12 +92,16 @@ function SkeletonCard() {
 export default function PrayPage() {
   const [prayers, setPrayers] = useState<PrayerRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<Filter>("all");
 
   useEffect(() => {
     fetch("/api/prayers")
       .then((r) => r.json())
       .then((d) => { setPrayers(d.prayers ?? []); setLoading(false); });
   }, []);
+
+  const visible =
+    filter === "answered" ? prayers.filter((p) => p.status === "answered") : prayers;
 
   return (
     <div className="relative min-h-screen">
@@ -115,7 +130,22 @@ export default function PrayPage() {
           </Link>
         </motion.div>
 
-        {/* Pull-quote — not an alert */}
+        <div className="flex gap-2 mb-6">
+          {(["all", "answered"] as const).map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize transition-colors press-scale ${
+                filter === f
+                  ? "bg-violet-500/20 text-violet-200 border border-violet-500/30"
+                  : "text-white/40 hover:text-white/60"
+              }`}
+            >
+              {f === "all" ? "All" : "Answered"}
+            </button>
+          ))}
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -131,17 +161,19 @@ export default function PrayPage() {
         <div className="flex flex-col gap-3">
           {loading
             ? Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)
-            : prayers.length === 0
+            : visible.length === 0
               ? (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-16 text-center">
                   <Heart size={32} className="mx-auto mb-3 text-white/20" />
-                  <p className="text-white/40 text-sm">No prayer requests yet.</p>
+                  <p className="text-white/40 text-sm">
+                    {filter === "answered" ? "No answered prayers yet." : "No prayer requests yet."}
+                  </p>
                   <Link href="/pray/new" className="mt-3 inline-block text-sm text-violet-300 hover:text-violet-200">
                     Share one →
                   </Link>
                 </motion.div>
               )
-              : prayers.map((p, i) => <PrayerCard key={p.id} prayer={p} index={i} />)
+              : visible.map((p, i) => <PrayerCard key={p.id} prayer={p} index={i} />)
           }
         </div>
       </div>
