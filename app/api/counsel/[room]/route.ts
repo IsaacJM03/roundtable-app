@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { detectRisk } from "@/lib/riskDetection";
+import { evaluateSessionRisk } from "@/lib/risk/evaluate";
 import { crisisResourceMessage } from "@/lib/counsel/crisisResources";
+import type { RiskFlag } from "@/lib/riskDetection";
 import { z } from "zod";
 
 const MessageSchema = z.object({
@@ -160,14 +161,31 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ roo
     }
   }
 
-  const risk = detectRisk(parsed.data.content);
-  if (risk !== "none" && session.risk_flag === "none") {
-    await admin.from("counseling_sessions").update({ risk_flag: risk }).eq("id", session.id);
-    await admin.from("messages").insert({
-      session_id: session.id,
-      content: crisisResourceMessage(risk),
-      sender_role: "system",
+  if (session.risk_flag === "none") {
+    const { data: recent } = await admin
+      .from("messages")
+      .select("content, sender_role")
+      .eq("session_id", session.id)
+      .order("created_at", { ascending: true })
+      .limit(8);
+
+    const evaluation = await evaluateSessionRisk({
+      currentMessage: parsed.data.content,
+      currentSenderRole: sender_role,
+      recentMessages: recent ?? [],
     });
+
+    if (evaluation.risk !== "none") {
+      await admin
+        .from("counseling_sessions")
+        .update({ risk_flag: evaluation.risk })
+        .eq("id", session.id);
+      await admin.from("messages").insert({
+        session_id: session.id,
+        content: crisisResourceMessage(evaluation.risk as RiskFlag),
+        sender_role: "system",
+      });
+    }
   }
 
   return NextResponse.json({ message: msg }, { status: 201 });

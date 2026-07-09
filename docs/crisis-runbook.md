@@ -1,5 +1,15 @@
 # Crisis response runbook (draft — review with legal/compliance)
 
+## How risk is detected
+
+Three layers (see `lib/risk/evaluate.ts`):
+
+1. **Hard rules** — instant keyword/pattern match on the new message and recent user lines (`lib/riskDetection.ts`).
+2. **Soft signals** — ambiguous phrasing triggers an LLM review only when needed (`lib/risk/softSignals.ts`).
+3. **Groq LLM** — classifies the last ~5 messages as a transcript when soft signals fire. Set `GROQ_API_KEY` in `.env`. Without it, layers 1–2 still run.
+
+Flag if rules match **or** LLM returns `self_harm` / `harm_to_others` with confidence ≥ 0.72.
+
 ## Self-harm (`risk_flag: self_harm`)
 
 1. System auto-surfaces 999 / emergency resources in chat (automated message, not volunteer).

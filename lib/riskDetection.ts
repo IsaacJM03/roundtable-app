@@ -1,7 +1,8 @@
 export type RiskFlag = "none" | "self_harm" | "harm_to_others";
 
 /**
- * Conservative rule-based risk detection.
+ * Conservative rule-based risk detection (tier 1 — instant).
+ * For soft-signal + LLM + session context, see lib/risk/evaluate.ts.
  * Reviewable by non-engineers — edit patterns here, not in routing code.
  */
 
