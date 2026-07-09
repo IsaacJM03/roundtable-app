@@ -3,8 +3,10 @@ import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 import { ArrowRight, BookOpen } from "lucide-react";
 import type { DailyDrop } from "@/lib/types";
 import { getDropsThroughDate } from "@/lib/daily/ensureDrop";
+import { todayDateString } from "@/lib/daily/today";
 
-export const revalidate = 3600;
+// Must resolve "today" on every request — ISR would keep yesterday's drop until revalidate.
+export const dynamic = "force-dynamic";
 
 function formatDate(dateStr: string) {
   const d = new Date(dateStr + "T12:00:00Z");
@@ -12,7 +14,7 @@ function formatDate(dateStr: string) {
 }
 
 async function getToday(): Promise<{ drop: DailyDrop | null; recent: DailyDrop[] }> {
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayDateString();
   const data = await getDropsThroughDate(today);
   if (data.length === 0) return { drop: null, recent: [] };
   const [drop, ...recent] = data;

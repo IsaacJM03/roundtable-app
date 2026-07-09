@@ -3,9 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, Check } from "lucide-react";
+import { todayDateString } from "@/lib/daily/today";
 
 export default function DashboardDailyPage() {
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayDateString();
   const [form, setForm] = useState({
     drop_date: today,
     verse_ref: "",

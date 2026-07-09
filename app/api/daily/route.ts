@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getDropsThroughDate } from "@/lib/daily/ensureDrop";
 import { fetchVerseForDate } from "@/lib/daily/fetchVerse";
 import { DEFAULT_QUESTION, DEFAULT_REFLECTION } from "@/lib/daily/passages";
+import { todayDateString } from "@/lib/daily/today";
 import { z } from "zod";
 
 const DropSchema = z.object({
@@ -14,7 +15,7 @@ const DropSchema = z.object({
 });
 
 export async function GET() {
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayDateString();
 
   try {
     const drops = await getDropsThroughDate(today);
@@ -34,7 +35,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
 
   if (body.action === "preview") {
-    const dateStr = body.drop_date ?? new Date().toISOString().split("T")[0];
+    const dateStr = body.drop_date ?? todayDateString();
     try {
       const verse = await fetchVerseForDate(dateStr);
       return NextResponse.json({
