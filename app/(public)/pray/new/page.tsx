@@ -129,21 +129,44 @@ export default function NewPrayerPage() {
               />
             </div>
 
-            {/* Privacy toggle */}
+            {/* Privacy toggle — ON = shared (default), OFF = private */}
             <div className="flex items-center justify-between p-4 rounded-xl glass border border-white/8">
-              <div className="flex items-center gap-2">
-                {isPrivate ? <Lock size={15} className="text-amber-300" /> : <Globe size={15} className="text-white/40" />}
-                <div>
-                  <p className="text-sm font-medium text-white/80">{isPrivate ? "Private request" : "Shared on prayer wall"}</p>
-                  <p className="text-xs text-white/40">{isPrivate ? "Only the prayer team sees this" : "Others can see and pray along"}</p>
+              <div className="flex items-center gap-3 min-w-0">
+                {isPrivate ? (
+                  <Lock size={15} className="text-amber-300 shrink-0" />
+                ) : (
+                  <Globe size={15} className="text-violet-300 shrink-0" />
+                )}
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-white/80">
+                    {isPrivate ? "Private" : "Shared on prayer wall"}
+                  </p>
+                  <p className="text-xs text-white/40">
+                    {isPrivate
+                      ? "Sent to the prayer team only"
+                      : "Others can see and pray along"}
+                  </p>
                 </div>
               </div>
               <button
                 type="button"
+                role="switch"
+                aria-checked={!isPrivate}
+                aria-label={
+                  isPrivate
+                    ? "Private — prayer team only"
+                    : "Shared on prayer wall"
+                }
                 onClick={() => setIsPrivate((v) => !v)}
-                className={`relative w-11 h-6 rounded-full transition-colors duration-200 press-scale ${isPrivate ? "bg-amber-500" : "bg-white/15"}`}
+                className={`relative w-11 h-6 shrink-0 rounded-full transition-colors duration-200 press-scale ${
+                  !isPrivate ? "bg-violet-500" : "bg-white/15"
+                }`}
               >
-                <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-200 ${isPrivate ? "left-[22px]" : "left-0.5"}`} />
+                <span
+                  className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all duration-200 ${
+                    !isPrivate ? "left-[22px]" : "left-0.5"
+                  }`}
+                />
               </button>
             </div>
 
