@@ -38,9 +38,9 @@ const entryCards = [
     iconColor: "text-violet-400",
   },
   {
-    href: "/counsel",
+    href: "/can-we-talk",
     icon: Users,
-    label: "Talk to Someone",
+    label: "Can We Talk?",
     num: "03",
     description:
       "Struggling? Connect anonymously with a real peer supporter — no account, no judgment.",

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" fill="none">
+  <rect width="390" height="844" fill="#FFF7ED"/>
+  <circle cx="60" cy="40" r="140" fill="#FF8918" fill-opacity="0.28"/>
+  <circle cx="340" cy="320" r="150" fill="#FF9710" fill-opacity="0.2"/>
+  <circle cx="120" cy="720" r="120" fill="#D55200" fill-opacity="0.12"/>
+  <circle cx="175" cy="60" r="4" fill="#FF8918" fill-opacity="0.3"/>
+  <circle cx="191" cy="60" r="4" fill="#FF8918" fill-opacity="0.3"/>
+  <rect x="204" y="56" width="28" height="8" rx="4" fill="#FF8918"/>
+  <text x="24" y="100" font-family="Nunito, Arial, sans-serif" font-size="13" font-weight="600" fill="#D55200">� Back</text>
+  <rect x="168" y="130" width="54" height="54" rx="16" fill="#FF8918" fill-opacity="0.2"/>
+  <path d="M183 157c4-6 12-6 16 0 4 6 0 14-8 20-8-6-12-14-8-20z" fill="#D55200"/>
+  <text x="195" y="230" text-anchor="middle" font-family="Fredoka, Arial Rounded MT Bold, sans-serif" font-size="34" font-weight="700" fill="#1A1410">Talk to someone</text>
+  <text x="40" y="268" font-family="Nunito, Arial, sans-serif" font-size="15" fill="#1A1410" fill-opacity="0.65">
+    <tspan x="40" dy="0">Anonymous. Real humans. No judgment.</tspan>
+    <tspan x="40" dy="22">Open a private room when you're ready.</tspan>
+  </text>
+  <g filter="url(#sh)">
+    <rect x="24" y="330" width="342" height="52" rx="16" fill="#FFFFFF"/>
+    <rect x="24" y="394" width="342" height="52" rx="16" fill="#FFFFFF"/>
+    <rect x="24" y="458" width="342" height="52" rx="16" fill="#FFFFFF"/>
+  </g>
+  <circle cx="48" cy="356" r="8" fill="#FF8918"/>
+  <text x="68" y="361" font-family="Nunito, sans-serif" font-size="13" fill="#1A1410" fill-opacity="0.75">Fully anonymous  we never know who you are</text>
+  <circle cx="48" cy="420" r="8" fill="#FF8918"/>
+  <text x="68" y="425" font-family="Nunito, sans-serif" font-size="13" fill="#1A1410" fill-opacity="0.75">A real peer supporter will connect with you</text>
+  <circle cx="48" cy="484" r="8" fill="#FF8918"/>
+  <text x="68" y="489" font-family="Nunito, sans-serif" font-size="13" fill="#1A1410" fill-opacity="0.75">Listening first. No pressure to perform.</text>
+  <g filter="url(#cta)">
+    <rect x="55" y="550" width="280" height="52" rx="16" fill="#FF8918"/>
+  </g>
+  <text x="195" y="582" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="16" font-weight="600" fill="#1A1410">Open a private room �</text>
+  <rect x="95" y="620" width="200" height="44" rx="16" fill="#FFFFFF" stroke="#FF8918" stroke-width="2"/>
+  <text x="195" y="647" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="14" font-weight="600" fill="#D55200">� Back to home</text>
+  <text x="40" y="710" font-family="Nunito, sans-serif" font-size="11" fill="#1A1410" fill-opacity="0.4">
+    <tspan x="40" dy="0">Peer supporters are volunteers, not licensed</tspan>
+    <tspan x="40" dy="16">therapists. For emergencies, call your local crisis line.</tspan>
+  </text>
+  <defs>
+    <filter id="sh" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#D55200" flood-opacity="0.16"/>
+    </filter>
+    <filter id="cta" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#FF8918" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+</svg>

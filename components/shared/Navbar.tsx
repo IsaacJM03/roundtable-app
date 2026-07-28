@@ -11,7 +11,7 @@ const primaryLinks = [
   { href: "/daily",   label: "Daily",          icon: BookOpen },
   { href: "/discuss", label: "Discuss",         icon: MessageCircle },
   { href: "/pray",    label: "Pray",            icon: Heart },
-  { href: "/counsel", label: "Talk to Someone", icon: Users },
+  { href: "/can-we-talk", label: "Can We Talk?", icon: Users },
 ];
 
 const secondaryLinks = [
