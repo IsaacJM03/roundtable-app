@@ -12,6 +12,8 @@ const ease = [0.23, 1, 0.32, 1] as const;
 
 const ROTATING_WORDS = ["doubts", "questions", "fears", "faith", "grief"];
 
+const feedbackFormUrl = process.env.NEXT_PUBLIC_FEEDBACK_FORM_URL;
+
 const entryCards = [
   {
     href: "/discuss",
@@ -187,6 +189,18 @@ export default function HomePage() {
         transition={{ duration: 0.5, delay: 0.75 }}
         className="text-center pb-8 px-4"
       >
+        {feedbackFormUrl ? (
+          <p className="mb-3">
+            <a
+              href={feedbackFormUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[12px] text-white/30 hover:text-amber-400/70 tracking-wide transition-colors duration-200 underline underline-offset-4 decoration-white/10 hover:decoration-amber-400/40"
+            >
+              Give feedback
+            </a>
+          </p>
+        ) : null}
         <p className="text-[11px] text-white/15">
           Built to point people to Jesus — one conversation at a time.
         </p>

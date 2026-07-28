@@ -20,8 +20,9 @@ No account is required for any of the above — everything is anonymous by defau
 
 ## How to give feedback
 
-1. **In-app** — use Report on Discuss threads; react and engage so we see what resonates
-2. **Direct** — reply to your beta invite email or message your Roundtable contact
-3. **Be specific** — what you tried, what you expected, what happened instead (screenshots help)
+1. **Feedback form** — use the weekly Google Form (link in your invite, and on the homepage as **Give feedback** when configured). Takes a few minutes; anonymous by default. Form design: [beta-feedback-form.md](./beta-feedback-form.md)
+2. **In-app** — use Report on Discuss threads; react and engage so we see what resonates
+3. **Direct** — reply to your beta invite email or message your Roundtable contact
+4. **Be specific** — what you tried, what you expected, what happened instead (screenshots help)
 
 We read everything. Thank you for walking with us.

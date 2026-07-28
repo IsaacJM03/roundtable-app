@@ -27,7 +27,7 @@ Manual execution guide for Roundtable beta. Code prerequisites are in [beta-test
 - Invite-only link
 - 70% seekers / 30% lurkers
 - 1 mod on-call per day (async)
-- Weekly feedback form (5 questions in tester guide)
+- Weekly feedback form ([beta-feedback-form.md](./beta-feedback-form.md); homepage CTA when `NEXT_PUBLIC_FEEDBACK_FORM_URL` is set)
 
 **Exit:** ≥60% seekers complete one meaningful action; mod queue < 24h
 
@@ -58,5 +58,5 @@ Manual execution guide for Roundtable beta. Code prerequisites are in [beta-test
 - [ ] `npm run unseed:scale` on production
 - [ ] Invite email template in Supabase
 - [ ] Roles: 1 `prayer_team`, 1 `admin`
-- [ ] Feedback form URL shared with testers
+- [ ] Feedback form published; `NEXT_PUBLIC_FEEDBACK_FORM_URL` set (local + Vercel) and shared with testers
 - [ ] Mod on-call schedule defined
