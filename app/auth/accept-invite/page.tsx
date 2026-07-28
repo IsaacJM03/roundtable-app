@@ -66,22 +66,16 @@ function AcceptInviteForm() {
   const searchParams = useSearchParams();
   const credentials = resolveInviteCredentials(searchParams);
 
-  const [checking, setChecking] = useState(true);
+  const [checking, setChecking] = useState(() => !parseHashError());
   const [hasSession, setHasSession] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(() => parseHashError() ?? "");
 
-  const hashError = parseHashError();
   const canAccept =
     credentials.mode !== "none" || hasSession;
 
   useEffect(() => {
-    const hashErr = parseHashError();
-    if (hashErr) {
-      setError(hashErr);
-      setChecking(false);
-      return;
-    }
+    if (error) return;
 
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
@@ -90,7 +84,7 @@ function AcceptInviteForm() {
       }
       setChecking(false);
     });
-  }, []);
+  }, [error]);
 
   async function acceptInvite() {
     setLoading(true);

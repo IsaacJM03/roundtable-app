@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, Heart, Send, Lock, Globe } from "lucide-react";
+import { ArrowLeft, Heart, Send, Lock, Globe, Copy, Check } from "lucide-react";
 import Link from "next/link";
 import { getOrCreateAnonToken } from "@/lib/anonymous";
 import { PRAYER_BODY_PLACEHOLDER } from "@/lib/prayer/display";
@@ -12,13 +11,14 @@ import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 const easeOut = [0.23, 1, 0.32, 1] as const;
 
 export default function NewPrayerPage() {
-  const router = useRouter();
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [email, setEmail] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -63,11 +63,62 @@ export default function NewPrayerPage() {
             : "Something went wrong";
         throw new Error(msg);
       }
-      router.push(`/pray/${json.prayer.id}`);
+      setSubmittedId(json.prayer.id);
+      setLoading(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
       setLoading(false);
     }
+  }
+
+  async function copyLink() {
+    if (!submittedId) return;
+    const url = `${window.location.origin}/pray/${submittedId}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt("Copy your prayer link:", url);
+    }
+  }
+
+  if (submittedId) {
+    return (
+      <div className="relative min-h-screen">
+        <AnimatedBackground />
+        <div className="max-w-2xl mx-auto px-4 py-16 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-violet-500/20 flex items-center justify-center mx-auto mb-5">
+            <Heart size={24} className="text-violet-300" />
+          </div>
+          <h1 className="text-xl font-bold text-white mb-2">Prayer submitted</h1>
+          <p className="text-sm text-white/45 mb-6 max-w-sm mx-auto">
+            {isPrivate
+              ? "Only the prayer team can see this. Save the link below to check for updates."
+              : "Your request is on the wall. Save this link to return anytime."}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button
+              type="button"
+              onClick={copyLink}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-violet-500/20 border border-violet-500/30 text-violet-200 text-sm font-medium press-scale"
+            >
+              {copied ? <Check size={14} /> : <Copy size={14} />}
+              {copied ? "Copied!" : "Copy link"}
+            </button>
+            <Link
+              href={`/pray/${submittedId}`}
+              className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl glass border border-white/10 text-white/70 text-sm hover:text-white press-scale"
+            >
+              View request
+            </Link>
+          </div>
+          <Link href="/pray" className="mt-8 inline-block text-sm text-white/35 hover:text-white/55">
+            Back to prayer wall
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (

@@ -22,14 +22,14 @@ function useCountdown(expiresAt: string) {
 
   const hours = Math.floor(ms / 3600000);
   const mins = Math.floor((ms % 3600000) / 60000);
-  if (hours > 0) return `${hours}h left`;
-  if (mins > 0) return `${mins}m left`;
-  return "Expiring…";
+  const label =
+    hours > 0 ? `${hours}h left` : mins > 0 ? `${mins}m left` : "Expiring…";
+  return { label, ms };
 }
 
 function HonestCard({ post, index, onReact }: { post: HonestHour; index: number; onReact: (id: string) => void }) {
-  const countdown = useCountdown(post.expires_at);
-  const isExpiring = new Date(post.expires_at).getTime() - Date.now() < 3 * 3600000;
+  const { label: countdown, ms } = useCountdown(post.expires_at);
+  const isExpiring = ms < 3 * 3600000;
 
   return (
     <motion.div

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MessageCircle, Heart, Users, ArrowRight } from "lucide-react";
+import { MessageCircle, Heart, Users, ArrowRight, BookOpen, Sparkles } from "lucide-react";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 import { TiltCard } from "@/components/shared/TiltCard";
 import { MagneticButton } from "@/components/shared/MagneticButton";
@@ -48,6 +48,30 @@ const entryCards = [
     accentGlow: "hover:shadow-rose-500/20",
     accentGradient: "from-rose-500/10 to-transparent",
     iconColor: "text-rose-400",
+  },
+  {
+    href: "/daily",
+    icon: BookOpen,
+    label: "Daily Drop",
+    num: "04",
+    description:
+      "A verse, a reflection, and a question for today — a quiet moment with Scripture.",
+    accentBorder: "hover:border-sky-500/30",
+    accentGlow: "hover:shadow-sky-500/20",
+    accentGradient: "from-sky-500/10 to-transparent",
+    iconColor: "text-sky-400",
+  },
+  {
+    href: "/moments",
+    icon: Sparkles,
+    label: "Moments",
+    num: "05",
+    description:
+      "Short testimonies and God moments from the community — read them or share your own.",
+    accentBorder: "hover:border-emerald-500/30",
+    accentGlow: "hover:shadow-emerald-500/20",
+    accentGradient: "from-emerald-500/10 to-transparent",
+    iconColor: "text-emerald-400",
   },
 ];
 
@@ -100,7 +124,7 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65, delay: 0.24, ease }}
-          className="mt-10 sm:mt-12 w-full max-w-4xl grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4"
+          className="mt-10 sm:mt-12 w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4"
           style={{ perspective: "1200px" }}
         >
           {entryCards.map((card, i) => (

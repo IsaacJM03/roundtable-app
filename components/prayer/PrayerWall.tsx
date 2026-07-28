@@ -133,7 +133,14 @@ function NoteInner({
       {isTestimony && <span className="pw-quote" aria-hidden="true">&ldquo;</span>}
       <p className="pw-text">{note.text}</p>
       {note.subtext && <p className="pw-subtext">&ldquo;{note.subtext}&rdquo;</p>}
-      <span className="pw-author">{note.author?.trim() || "Anonymous"}</span>
+      <div className="pw-footer">
+        <span className="pw-author">{note.author?.trim() || "Anonymous"}</span>
+        {note.count != null && note.count > 0 && (
+          <span className="pw-count" aria-label={`${note.count} reactions`}>
+            🙏 {note.count}
+          </span>
+        )}
+      </div>
     </>
   );
 
@@ -433,6 +440,14 @@ const PW_STYLES = `
   word-break: break-word;
 }
 .pw-author { font-size: .72rem; font-weight: 600; opacity: .7; }
+.pw-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  margin-top: .25rem;
+}
+.pw-count { font-size: .72rem; font-weight: 600; opacity: .65; }
 
 /* Accessibility: honour reduced motion — simple fade, no tilt/parallax. */
 @media (prefers-reduced-motion: reduce) {

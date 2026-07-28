@@ -55,20 +55,35 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
 
   const [reporting, setReporting] = useState(false);
   const [reportDone, setReportDone] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportReason, setReportReason] = useState("off_topic");
+  const [reportNote, setReportNote] = useState("");
 
-  async function reportPost() {
-    const reason = window.prompt("Why are you reporting this post? (required)");
-    if (!reason || reason.trim().length < 3) return;
+  const REPORT_REASONS = [
+    { value: "spam", label: "Spam" },
+    { value: "harassment", label: "Harassment" },
+    { value: "off_topic", label: "Off-topic" },
+    { value: "other", label: "Other" },
+  ] as const;
+
+  async function submitReport(e: React.FormEvent) {
+    e.preventDefault();
     setReporting(true);
     try {
       const token = getOrCreateAnonToken();
       const res = await fetch("/api/reports", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ post_id: id, reporter_token: token, reason: reason.trim() }),
+        body: JSON.stringify({
+          post_id: id,
+          reporter_token: token,
+          reason: reportReason,
+          note: reportNote.trim() || undefined,
+        }),
       });
       if (!res.ok) throw new Error("Report failed");
       setReportDone(true);
+      setReportOpen(false);
     } catch {
       setError("Could not submit report. Try again.");
     }
@@ -153,7 +168,7 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
               <TimeAgo date={post.created_at} className="text-xs text-white/30 ml-auto" />
               <button
                 type="button"
-                onClick={reportPost}
+                onClick={() => setReportOpen(true)}
                 disabled={reporting || reportDone}
                 className="text-xs text-white/25 hover:text-rose-300 flex items-center gap-1 press-scale disabled:opacity-40"
               >
@@ -222,6 +237,60 @@ export default function ThreadPage({ params }: { params: Promise<{ id: string }>
           </form>
         </motion.div>
       </div>
+
+      {reportOpen && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60">
+          <form
+            onSubmit={submitReport}
+            className="w-full max-w-md rounded-2xl glass border border-white/10 p-5 flex flex-col gap-4"
+          >
+            <h2 className="text-base font-semibold text-white">Report this post</h2>
+            <div className="flex flex-col gap-2">
+              <label className="text-xs text-white/45 uppercase tracking-wider">Reason</label>
+              <select
+                value={reportReason}
+                onChange={(e) => setReportReason(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl glass border border-white/10 bg-transparent text-white text-sm"
+              >
+                {REPORT_REASONS.map((r) => (
+                  <option key={r.value} value={r.value} className="bg-zinc-900">
+                    {r.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-xs text-white/45 uppercase tracking-wider">
+                Details <span className="normal-case text-white/25">(optional)</span>
+              </label>
+              <textarea
+                value={reportNote}
+                onChange={(e) => setReportNote(e.target.value)}
+                rows={3}
+                maxLength={400}
+                placeholder="Anything else the moderators should know…"
+                className="w-full px-3 py-2 rounded-xl glass border border-white/10 bg-transparent text-white text-sm resize-none"
+              />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                type="button"
+                onClick={() => setReportOpen(false)}
+                className="px-4 py-2 rounded-xl text-sm text-white/50 hover:text-white/70 press-scale"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={reporting}
+                className="px-4 py-2 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-200 text-sm font-medium disabled:opacity-50 press-scale"
+              >
+                {reporting ? "Sending…" : "Submit report"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

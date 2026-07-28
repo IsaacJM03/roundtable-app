@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Lock, Mail, ArrowRight, Loader2, AlertTriangle } from "lucide-react";
@@ -30,17 +30,13 @@ function SignInForm() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") ?? "/dashboard";
   const queryError = searchParams.get("error");
-  const [hashError, setHashError] = useState<string | null>(null);
+  const [hashError] = useState(() => parseHashError());
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const inviteFailed = queryError === "auth_failed" || !!hashError;
-
-  useEffect(() => {
-    setHashError(parseHashError());
-  }, []);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();

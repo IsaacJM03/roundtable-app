@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { MessageCircle, Plus, Search, Filter } from "lucide-react";
@@ -70,27 +70,57 @@ function SkeletonCard() {
   );
 }
 
-export default function DiscussPage() {
+function DiscussPostList({ category, search }: { category: string; search: string }) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [category, setCategory] = useState<string>("all");
-  const [search, setSearch] = useState("");
 
-  const load = useCallback(async () => {
-    setLoading(true);
+  useEffect(() => {
+    let cancelled = false;
     const params = new URLSearchParams({ page: "1" });
     if (category !== "all") params.set("category", category);
-    const res = await fetch(`/api/posts?${params}`);
-    const json = await res.json();
-    setPosts(json.posts ?? []);
-    setLoading(false);
+    fetch(`/api/posts?${params}`)
+      .then((res) => res.json())
+      .then((json) => {
+        if (!cancelled) {
+          setPosts(json.posts ?? []);
+          setLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [category]);
-
-  useEffect(() => { load(); }, [load]);
 
   const filtered = posts.filter((p) =>
     search ? p.title.toLowerCase().includes(search.toLowerCase()) || p.body.toLowerCase().includes(search.toLowerCase()) : true
   );
+
+  return (
+    <div className="flex flex-col gap-3">
+      {loading
+        ? Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)
+        : filtered.length === 0
+          ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="py-16 text-center"
+            >
+              <MessageCircle size={32} className="mx-auto mb-3 text-white/20" />
+              <p className="text-white/40 text-sm">No discussions yet.</p>
+              <Link href="/discuss/new" className="mt-3 inline-block text-sm text-amber-300 hover:text-amber-200">
+                Be the first to ask →
+              </Link>
+            </motion.div>
+          )
+          : filtered.map((post, i) => <PostCard key={post.id} post={post} index={i} />)}
+    </div>
+  );
+}
+
+export default function DiscussPage() {
+  const [category, setCategory] = useState<string>("all");
+  const [search, setSearch] = useState("");
 
   return (
     <div className="relative min-h-screen">
@@ -159,27 +189,7 @@ export default function DiscussPage() {
           ))}
         </motion.div>
 
-        {/* Post list */}
-        <div className="flex flex-col gap-3">
-          {loading
-            ? Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)
-            : filtered.length === 0
-              ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="py-16 text-center"
-                >
-                  <MessageCircle size={32} className="mx-auto mb-3 text-white/20" />
-                  <p className="text-white/40 text-sm">No discussions yet.</p>
-                  <Link href="/discuss/new" className="mt-3 inline-block text-sm text-amber-300 hover:text-amber-200">
-                    Be the first to ask →
-                  </Link>
-                </motion.div>
-              )
-              : filtered.map((post, i) => <PostCard key={post.id} post={post} index={i} />)
-          }
-        </div>
+        <DiscussPostList key={category} category={category} search={search} />
       </div>
     </div>
   );

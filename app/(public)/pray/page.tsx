@@ -50,6 +50,7 @@ function prayerToNote(p: PrayerRequest): PrayerNote {
           ? "Being prayed for"
           : undefined,
     author: "Anonymous",
+    count: p.reaction_count ?? 0,
     href: `/pray/${p.id}`,
   };
 }
@@ -76,8 +77,7 @@ export default function PrayPage() {
 
   const { items: prayers, loading, loadingMore, hasMore, loadMoreRef } = usePaginatedFeed(
     buildUrl,
-    extract,
-    [filter]
+    extract
   );
 
   const notes = useMemo(() => prayers.map(prayerToNote), [prayers]);

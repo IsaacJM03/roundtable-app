@@ -14,8 +14,7 @@ type FeedState<T> = {
 
 export function usePaginatedFeed<T>(
   buildUrl: (page: number) => string,
-  extract: (json: Record<string, unknown>) => T[],
-  deps: unknown[] = []
+  extract: (json: Record<string, unknown>) => T[]
 ): FeedState<T> {
   const [items, setItems] = useState<T[]>([]);
   const [page, setPage] = useState(1);
@@ -45,15 +44,14 @@ export function usePaginatedFeed<T>(
         setLoadingMore(false);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [buildUrl, extract, ...deps]
+    [buildUrl, extract]
   );
 
   useEffect(() => {
-    setItems([]);
-    setPage(1);
-    setHasMore(true);
-    fetchPage(1, false);
+    const t = setTimeout(() => {
+      void fetchPage(1, false);
+    }, 0);
+    return () => clearTimeout(t);
   }, [fetchPage]);
 
   const loadMoreRef = useCallback(

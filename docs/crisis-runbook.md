@@ -10,6 +10,8 @@ Three layers (see `lib/risk/evaluate.ts`):
 
 Flag if rules match **or** LLM returns `self_harm` / `harm_to_others` with confidence ≥ 0.72.
 
+Crisis messages are global by default (988 in the US, local emergency services). Override via `CRISIS_SELF_HARM_MESSAGE`, `CRISIS_HARM_TO_OTHERS_MESSAGE`, or a shared `CRISIS_RESOURCES_MESSAGE` in `.env` (see `lib/counsel/crisisResources.ts`).
+
 ## Self-harm (`risk_flag: self_harm`)
 
 1. System auto-surfaces 999 / emergency resources in chat (automated message, not volunteer).

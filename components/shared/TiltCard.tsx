@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import {
   motion,
   useMotionValue,
@@ -24,10 +24,11 @@ export function TiltCard({
   spotRadius = 180,
 }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [isTouch, setIsTouch] = useState(false);
-  useEffect(() => {
-    setIsTouch(window.matchMedia("(hover: none) and (pointer: coarse)").matches);
-  }, []);
+  const [isTouch] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: none) and (pointer: coarse)").matches
+  );
   const hoverProgress = useMotionValue(0);
 
   const rawX = useMotionValue(0);

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { enforceRateLimit } from "@/lib/rateLimit";
 import { z } from "zod";
 
 const MomentSchema = z.object({
@@ -32,6 +33,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const limited = enforceRateLimit(req, "moments-post");
+  if (limited) return limited;
+
   const body = await req.json();
   const parsed = MomentSchema.safeParse(body);
   if (!parsed.success) {

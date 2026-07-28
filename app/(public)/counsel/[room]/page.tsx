@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, use, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Loader2, Users, Heart, X, AlertTriangle, PhoneForwarded } from "lucide-react";
+import { Send, Loader2, Heart, X, AlertTriangle, PhoneForwarded } from "lucide-react";
 import { getAnonToken } from "@/lib/anonymous";
 import type { Message, SessionStatus, RiskFlag } from "@/lib/types";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
@@ -21,11 +21,9 @@ function volunteersAvailableForRoom(roomId: string): boolean {
 
 function ChatBubble({
   message,
-  isOwn,
   isTeam,
 }: {
   message: Message;
-  isOwn: boolean;
   isTeam: boolean;
 }) {
   if (message.sender_role === "system") {
@@ -90,8 +88,13 @@ function ChatRoomInner({ params }: { params: Promise<{ room: string }> }) {
   const [sending, setSending] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [volunteersAvailable, setVolunteersAvailable] = useState(false);
-  const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const [volunteersAvailable] = useState(() => volunteersAvailableForRoom(room));
+  const [showDisclaimer, setShowDisclaimer] = useState(
+    () =>
+      !isTeam &&
+      typeof window !== "undefined" &&
+      !localStorage.getItem(DISCLAIMER_KEY)
+  );
   const bottomRef = useRef<HTMLDivElement>(null);
   const anonToken = getAnonToken();
 
@@ -110,14 +113,16 @@ function ChatRoomInner({ params }: { params: Promise<{ room: string }> }) {
   }, [room, anonToken, isTeam]);
 
   useEffect(() => {
-    setVolunteersAvailable(volunteersAvailableForRoom(room));
-    if (!isTeam && typeof window !== "undefined" && !localStorage.getItem(DISCLAIMER_KEY)) {
-      setShowDisclaimer(true);
-    }
-    poll();
-    const interval = setInterval(poll, 5000);
-    return () => clearInterval(interval);
-  }, [poll, room, isTeam]);
+    const run = () => {
+      void poll();
+    };
+    const t = setTimeout(run, 0);
+    const interval = setInterval(run, 5000);
+    return () => {
+      clearTimeout(t);
+      clearInterval(interval);
+    };
+  }, [poll]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -255,7 +260,7 @@ function ChatRoomInner({ params }: { params: Promise<{ room: string }> }) {
 
         <AnimatePresence initial={false}>
           {messages.map((msg) => (
-            <ChatBubble key={msg.id} message={msg} isOwn={msg.sender_role === "user"} isTeam={isTeam} />
+            <ChatBubble key={msg.id} message={msg} isTeam={isTeam} />
           ))}
         </AnimatePresence>
 

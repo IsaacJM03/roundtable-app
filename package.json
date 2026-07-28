@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "tsx lib/risk/evaluate.test.ts && tsx lib/riskDetection.test.ts && tsx lib/daily/today.test.ts",
     "seed": "tsx --env-file=.env scripts/seed.ts",
     "unseed": "tsx --env-file=.env scripts/unseed.ts",
     "seed:scale": "tsx --env-file=.env scripts/seed-scale.ts",

@@ -75,7 +75,8 @@ export function ReactionBar({
 
     // Optimistic
     const newMine = new Set(mine);
-    isActive ? newMine.delete(type) : newMine.add(type);
+    if (isActive) newMine.delete(type);
+    else newMine.add(type);
     setMine(newMine);
     setCounts((prev) => ({ ...prev, [type]: Math.max(0, prev[type] + (isActive ? -1 : 1)) }));
 
@@ -95,9 +96,6 @@ export function ReactionBar({
   };
 
   if (!ready) return null;
-
-  const total = counts.praying + counts.amen + counts.felt_this;
-  const hasAny = total > 0 || mine.size > 0;
 
   return (
     <div className="flex items-center gap-0.5">

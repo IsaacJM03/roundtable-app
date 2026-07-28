@@ -64,6 +64,8 @@ export interface PrayerRequest {
   testimony_at: string | null;
   created_at: string;
   prayer_updates?: PrayerUpdate[];
+  /** Populated by GET /api/prayers — aggregate from reactions table */
+  reaction_count?: number;
 }
 
 export interface PrayerUpdate {

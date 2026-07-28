@@ -1,15 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { enforceRateLimit } from "@/lib/rateLimit";
 import { z } from "zod";
 
-const ReportSchema = z.object({
-  post_id: z.string().uuid(),
-  reporter_token: z.string().uuid(),
-  reason: z.string().min(3).max(500),
-});
+const REPORT_REASONS = ["spam", "harassment", "off_topic", "other"] as const;
+
+const ReportSchema = z
+  .object({
+    post_id: z.string().uuid(),
+    reporter_token: z.string().uuid(),
+    reason: z.union([z.enum(REPORT_REASONS), z.string().min(3).max(500)]),
+    note: z.string().max(400).optional(),
+  })
+  .transform(({ post_id, reporter_token, reason, note }) => {
+    const text =
+      (REPORT_REASONS as readonly string[]).includes(reason) && note?.trim()
+        ? `${reason}: ${note.trim()}`
+        : String(reason);
+    return { post_id, reporter_token, reason: text };
+  });
 
 export async function POST(req: NextRequest) {
+  const limited = enforceRateLimit(req, "reports-post");
+  if (limited) return limited;
+
   const body = await req.json();
   const parsed = ReportSchema.safeParse(body);
   if (!parsed.success) {
