@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Heart, LayoutDashboard, Menu, X, BookOpen, Sparkles, Flame } from "lucide-react";
+import { MessageCircle, Heart, LayoutDashboard, Menu, X, BookOpen, Sparkles, Flame, MessageSquarePlus } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +17,8 @@ const secondaryLinks = [
   { href: "/moments", label: "Moments", icon: Sparkles },
   { href: "/honest",  label: "Honest Hours", icon: Flame },
 ];
+
+const feedbackFormUrl = process.env.NEXT_PUBLIC_FEEDBACK_FORM_URL;
 
 export function Navbar() {
   const pathname = usePathname();
@@ -101,6 +103,17 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center gap-2">
+            {feedbackFormUrl ? (
+              <a
+                href={feedbackFormUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-amber-400/90 hover:text-amber-300 border border-amber-500/30 hover:border-amber-400/50 hover:bg-amber-500/10 transition-colors duration-150 press-scale"
+              >
+                <MessageSquarePlus size={13} />
+                Give feedback
+              </a>
+            ) : null}
             <Link
               href="/dashboard"
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/5 transition-colors duration-150 press-scale"
@@ -185,6 +198,21 @@ export function Navbar() {
                 </Link>
               );
             })}
+            {feedbackFormUrl ? (
+              <>
+                <div className="mx-3 my-1 h-px bg-white/6" />
+                <a
+                  href={feedbackFormUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-amber-400/90 hover:text-amber-300 hover:bg-amber-500/10 transition-colors duration-150"
+                >
+                  <MessageSquarePlus size={15} />
+                  Give feedback
+                </a>
+              </>
+            ) : null}
             <div className="mx-3 my-1 h-px bg-white/6" />
               <Link
                 href="/dashboard"

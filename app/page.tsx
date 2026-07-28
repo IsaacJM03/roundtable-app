@@ -190,16 +190,22 @@ export default function HomePage() {
         className="text-center pb-8 px-4"
       >
         {feedbackFormUrl ? (
-          <p className="mb-3">
-            <a
-              href={feedbackFormUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[12px] text-white/30 hover:text-amber-400/70 tracking-wide transition-colors duration-200 underline underline-offset-4 decoration-white/10 hover:decoration-amber-400/40"
-            >
-              Give feedback
-            </a>
-          </p>
+          <div className="mb-6 flex flex-col items-center gap-2">
+            <MagneticButton>
+              <a
+                href={feedbackFormUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-sm font-semibold tracking-wide transition-colors duration-150 press-scale glow-amber"
+              >
+                Give feedback
+                <ArrowRight size={15} strokeWidth={2.25} />
+              </a>
+            </MagneticButton>
+            <p className="text-[11px] text-white/30 tracking-wide">
+              2 minutes · anonymous
+            </p>
+          </div>
         ) : null}
         <p className="text-[11px] text-white/15">
           Built to point people to Jesus — one conversation at a time.
