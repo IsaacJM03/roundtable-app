@@ -3,15 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, Heart, Users, LayoutDashboard, Menu, X, BookOpen, Sparkles, Flame } from "lucide-react";
+import { MessageCircle, Heart, LayoutDashboard, Menu, X, BookOpen, Sparkles, Flame } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const primaryLinks = [
-  { href: "/daily",   label: "Daily",          icon: BookOpen },
-  { href: "/discuss", label: "Discuss",         icon: MessageCircle },
-  { href: "/pray",    label: "Pray",            icon: Heart },
-  { href: "/can-we-talk", label: "Can We Talk?", icon: Users },
+  { href: "/daily",   label: "Daily",   icon: BookOpen },
+  { href: "/discuss", label: "Discuss", icon: MessageCircle },
+  { href: "/pray",    label: "Pray",    icon: Heart },
 ];
 
 const secondaryLinks = [

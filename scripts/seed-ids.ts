@@ -18,16 +18,6 @@ export const SEED = {
     public: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbb01",
     private: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbb02",
   },
-  counseling: {
-    pending: "cccccccc-cccc-4ccc-8ccc-cccccccccc01",
-    active: "cccccccc-cccc-4ccc-8ccc-cccccccccc02",
-  },
-  messages: {
-    user1: "cccccccc-cccc-4ccc-8ccc-cccccccccc11",
-    counselor1: "cccccccc-cccc-4ccc-8ccc-cccccccccc12",
-    user2: "cccccccc-cccc-4ccc-8ccc-cccccccccc21",
-    counselor2: "cccccccc-cccc-4ccc-8ccc-cccccccccc22",
-  },
   dailyDrop: "dddddddd-dddd-4ddd-8ddd-dddddddddd01",
   moments: {
     one: "eeeeeeee-eeee-4eee-8eee-eeeeeeeeee01",

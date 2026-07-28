@@ -27,19 +27,16 @@ async function unseed() {
   const postIds = Object.values(SEED.posts);
   const prayerIds = Object.values(SEED.prayers);
   const momentIds = Object.values(SEED.moments);
-  const counselIds = Object.values(SEED.counseling);
 
   // Children first (cascades handle some, but reactions are polymorphic)
   await supabase.from("reactions").delete().in("target_id", [...postIds, ...prayerIds]);
   await supabase.from("moment_reactions").delete().in("moment_id", momentIds);
-  await supabase.from("messages").delete().in("session_id", counselIds);
   await supabase.from("replies").delete().in("post_id", postIds);
 
   const tables: { name: string; column: string; ids: string[] }[] = [
     { name: "honest_hours", column: "id", ids: Object.values(SEED.honest) },
     { name: "god_moments", column: "id", ids: momentIds },
     { name: "daily_drops", column: "id", ids: [SEED.dailyDrop] },
-    { name: "counseling_sessions", column: "id", ids: counselIds },
     { name: "prayer_requests", column: "id", ids: prayerIds },
     { name: "posts", column: "id", ids: postIds },
   ];

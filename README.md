@@ -40,7 +40,7 @@ where id = (
 );
 ```
 
-Valid roles are `admin`, `prayer_team`, `counselor`, and `member`.
+Valid roles are `admin`, `prayer_team`, `counselor` (legacy; unused by the app), and `member`.
 
 ## Email (Gmail SMTP + Team Invites)
 

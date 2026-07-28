@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import {
   LayoutDashboard,
   Heart,
-  Users,
   MessageCircle,
   LogOut,
   ShieldCheck,
@@ -24,7 +23,6 @@ type NavItem = {
 const navItems: NavItem[] = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/dashboard/prayers", label: "Prayers", icon: Heart, roles: ["prayer_team", "admin"] },
-  { href: "/dashboard/counseling", label: "Counseling", icon: Users, roles: ["counselor", "admin"] },
   { href: "/dashboard/posts", label: "Posts", icon: MessageCircle },
   { href: "/dashboard/daily", label: "Daily Drop", icon: BookOpen, roles: ["prayer_team", "admin"] },
   { href: "/dashboard/moments", label: "Moments", icon: Sparkles, roles: ["prayer_team", "admin"] },

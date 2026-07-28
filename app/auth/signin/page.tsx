@@ -66,7 +66,7 @@ function SignInForm() {
         </div>
         <div>
           <h1 className="text-lg font-bold text-white">Team sign in</h1>
-          <p className="text-xs text-white/40">For prayer team, counselors & admins</p>
+          <p className="text-xs text-white/40">For prayer team & admins</p>
         </div>
       </div>
 

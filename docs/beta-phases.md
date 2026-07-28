@@ -56,8 +56,7 @@ Manual execution guide for Roundtable beta. Code prerequisites are in [beta-test
 ## Pre-launch checklist
 
 - [ ] `npm run unseed:scale` on production
-- [ ] `GROQ_API_KEY` set (if testing counsel risk)
 - [ ] Invite email template in Supabase
-- [ ] Roles: 1 `prayer_team`, 1 `admin`, 1 `counselor`
+- [ ] Roles: 1 `prayer_team`, 1 `admin`
 - [ ] Feedback form URL shared with testers
 - [ ] Mod on-call schedule defined

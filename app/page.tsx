@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MessageCircle, Heart, Users, ArrowRight, BookOpen, Sparkles } from "lucide-react";
+import { MessageCircle, Heart, ArrowRight, BookOpen, Sparkles } from "lucide-react";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 import { TiltCard } from "@/components/shared/TiltCard";
 import { MagneticButton } from "@/components/shared/MagneticButton";
@@ -38,22 +38,10 @@ const entryCards = [
     iconColor: "text-violet-400",
   },
   {
-    href: "/can-we-talk",
-    icon: Users,
-    label: "Can We Talk?",
-    num: "03",
-    description:
-      "Struggling? Connect anonymously with a real peer supporter — no account, no judgment.",
-    accentBorder: "hover:border-rose-500/30",
-    accentGlow: "hover:shadow-rose-500/20",
-    accentGradient: "from-rose-500/10 to-transparent",
-    iconColor: "text-rose-400",
-  },
-  {
     href: "/daily",
     icon: BookOpen,
     label: "Daily Drop",
-    num: "04",
+    num: "03",
     description:
       "A verse, a reflection, and a question for today — a quiet moment with Scripture.",
     accentBorder: "hover:border-sky-500/30",
@@ -65,7 +53,7 @@ const entryCards = [
     href: "/moments",
     icon: Sparkles,
     label: "Moments",
-    num: "05",
+    num: "04",
     description:
       "Short testimonies and God moments from the community — read them or share your own.",
     accentBorder: "hover:border-emerald-500/30",

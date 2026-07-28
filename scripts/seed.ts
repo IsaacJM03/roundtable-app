@@ -126,47 +126,6 @@ async function seed() {
   if (prayerReactErr) throw prayerReactErr;
   console.log("  ✓ prayer reactions (1)");
 
-  // ── Counseling sessions ──────────────────────────────────────────────────
-  const { error: counselErr } = await supabase.from("counseling_sessions").upsert(
-    [
-      {
-        id: SEED.counseling.pending,
-        room_id: "cccccccc-cccc-4ccc-8ccc-cccccccccc99",
-        status: "pending",
-        anonymous_token: SEED.anonToken,
-        intake_note: "[SEED] Feeling overwhelmed at work and home. Would like someone to talk to.",
-      },
-      {
-        id: SEED.counseling.active,
-        room_id: "cccccccc-cccc-4ccc-8ccc-cccccccccc98",
-        status: "active",
-        anonymous_token: SEED.anonToken2,
-        intake_note: "[SEED] Grieving a recent loss. Looking for a listening ear.",
-      },
-    ],
-    { onConflict: "id" }
-  );
-  if (counselErr) throw counselErr;
-  console.log("  ✓ counseling_sessions (2)");
-
-  await supabase.from("messages").delete().eq("session_id", SEED.counseling.active);
-  const { error: msgErr } = await supabase.from("messages").insert([
-    {
-      id: SEED.messages.user2,
-      session_id: SEED.counseling.active,
-      content: "[SEED] Thank you for being here. I don't really know where to start.",
-      sender_role: "user",
-    },
-    {
-      id: SEED.messages.counselor2,
-      session_id: SEED.counseling.active,
-      content: "Take your time. There's no rush — I'm glad you reached out.",
-      sender_role: "counselor",
-    },
-  ]);
-  if (msgErr) throw msgErr;
-  console.log("  ✓ messages (2)");
-
   // ── Daily drop (far-future date so it won't clash with real content) ─────
   const { error: dailyErr } = await supabase.from("daily_drops").upsert(
     {

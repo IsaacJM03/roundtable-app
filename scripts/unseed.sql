@@ -16,17 +16,11 @@ WHERE moment_id IN (
   'eeeeeeee-eeee-4eee-8eee-eeeeeeeeee02'
 );
 
--- Cascading deletes handle replies, messages, prayer_updates
+-- Cascading deletes handle replies, prayer_updates
 DELETE FROM public.replies
 WHERE post_id IN (
   'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa01',
   'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaa02'
-);
-
-DELETE FROM public.messages
-WHERE session_id IN (
-  'cccccccc-cccc-4ccc-8ccc-cccccccccc01',
-  'cccccccc-cccc-4ccc-8ccc-cccccccccc02'
 );
 
 DELETE FROM public.honest_hours
@@ -44,12 +38,6 @@ WHERE id IN (
 DELETE FROM public.daily_drops
 WHERE id = 'dddddddd-dddd-4ddd-8ddd-dddddddddd01'
    OR drop_date = '2099-01-01';
-
-DELETE FROM public.counseling_sessions
-WHERE id IN (
-  'cccccccc-cccc-4ccc-8ccc-cccccccccc01',
-  'cccccccc-cccc-4ccc-8ccc-cccccccccc02'
-);
 
 DELETE FROM public.prayer_requests
 WHERE id IN (

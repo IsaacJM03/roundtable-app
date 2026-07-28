@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
-import { Heart, Users, MessageCircle, TrendingUp, ArrowRight, ShieldCheck } from "lucide-react";
+import { Heart, MessageCircle, TrendingUp, ArrowRight, ShieldCheck } from "lucide-react";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -10,21 +10,17 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase.from("profiles").select("display_name, role").eq("id", user.id).single();
 
-  // Stats
-  const [{ count: prayerCount }, { count: sessionCount }, { count: postCount }] = await Promise.all([
+  const [{ count: prayerCount }, { count: postCount }] = await Promise.all([
     supabase.from("prayer_requests").select("*", { count: "exact", head: true }).eq("status", "active"),
-    supabase.from("counseling_sessions").select("*", { count: "exact", head: true }).eq("status", "pending"),
     supabase.from("posts").select("*", { count: "exact", head: true }).eq("status", "active"),
   ]);
 
   const stats = [
     { label: "Active prayer requests", value: prayerCount ?? 0, icon: Heart, href: "/dashboard/prayers", color: "violet" },
-    { label: "Pending counseling sessions", value: sessionCount ?? 0, icon: Users, href: "/dashboard/counseling", color: "rose" },
     { label: "Active discussions", value: postCount ?? 0, icon: MessageCircle, href: "/dashboard/posts", color: "amber" },
   ];
 
   const role = profile?.role ?? "member";
-  const canCounsel = ["counselor", "admin"].includes(role);
   const canPray = ["prayer_team", "admin"].includes(role);
   const isAdmin = role === "admin";
 
@@ -39,8 +35,7 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
         {stats.map(({ label, value, icon: Icon, href, color }) => (
           <Link
             key={href}
@@ -64,7 +59,6 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      {/* Quick actions */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {canPray && (
           <Link
@@ -77,21 +71,6 @@ export default async function DashboardPage() {
             <div>
               <p className="text-sm font-semibold text-white">Prayer queue</p>
               <p className="text-xs text-white/40">Review & update prayer requests</p>
-            </div>
-            <ArrowRight size={16} className="ml-auto text-white/20 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all duration-150" />
-          </Link>
-        )}
-        {canCounsel && (
-          <Link
-            href="/dashboard/counseling"
-            className="group flex items-center gap-4 p-4 rounded-2xl glass border border-white/8 hover:border-rose-500/25 transition-all duration-200 press-scale"
-          >
-            <div className="w-10 h-10 rounded-xl bg-rose-500/15 flex items-center justify-center shrink-0">
-              <Users size={18} className="text-rose-300" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-white">Counseling queue</p>
-              <p className="text-xs text-white/40">Accept sessions & support people</p>
             </div>
             <ArrowRight size={16} className="ml-auto text-white/20 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all duration-150" />
           </Link>
